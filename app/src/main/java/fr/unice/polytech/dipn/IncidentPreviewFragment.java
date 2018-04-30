@@ -21,6 +21,8 @@ public class IncidentPreviewFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    private RecyclerView recyclerView;
+
     private OnFragmentInteractionListener mListener;
 
     public IncidentPreviewFragment() {
@@ -52,10 +54,18 @@ public class IncidentPreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_incident_recycler, container, false);
+        View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
+        List<Incident> incidentList;
+        incidentList = Data.getInstance().getDataFilteredByLevel(getArguments().getInt(ARG_SECTION_NUMBER));
+        IncidentAdapter adapter = new IncidentAdapter(incidentList);
+        RecyclerView recyclerView = view.findViewById(R.id.incidentView);
+        recyclerView.setAdapter(adapter);
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -86,14 +96,5 @@ public class IncidentPreviewFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        List<Incident> incidentList;
-        incidentList = Data.getInstance().getDataFilteredByLevel(getArguments().getInt(ARG_SECTION_NUMBER));
-        IncidentAdapter adapter = new IncidentAdapter(incidentList);
-        RecyclerView recyclerView = getActivity().findViewById(R.id.incidentView);
-        recyclerView.setAdapter(adapter);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-
     }
 }
