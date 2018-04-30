@@ -21,10 +21,11 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static String DB_NAME = "DIPN_database";
+    private static final String DB_NAME = "DIPN_database";
+    public static final int DB_VERSION = 1;
 
     private static final String SQL_CREATE_TABLE =
-            "CREATE TABLE " + DB_NAME + " (" +
+            "CREATE TABLE " + "INCIDENT" + " (" +
                     "ID INTEGER PRIMARY KEY," +
                     "AUTHOR VARCHAR(20)," +
                     "TITLE VARCHAR(50)," +
@@ -36,21 +37,25 @@ public class DBHelper extends SQLiteOpenHelper {
                     "DATE DATE" +
                     ")";
 
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
+    private static final String SQL_DELETE_TABLE =
+            "DROP TABLE IF EXISTS " + "INCIDENT";
 
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
-        super(context, name, factory, version, errorHandler);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+    public DBHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SQL_CREATE_TABLE);
+    }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(SQL_DELETE_TABLE);
+        onCreate(db);
+    }
+
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
     }
 }
