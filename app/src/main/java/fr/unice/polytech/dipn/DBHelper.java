@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     "IMPORTANCE INT," +
                     "LATITUDE DOUBLE" +
                     "LONGITUDE DOUBLE" +
-                    "DATE DATE" +
+                    "DATE INT" +
                     ")";
 
     private static final String SQL_DELETE_TABLE =

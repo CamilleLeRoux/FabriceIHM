@@ -17,10 +17,10 @@ public class Incident {
     private double longitude;
     private int importance;
     private String description;
-    private Date date;
+    private long date;
 
     public Incident(int id, String title, String author, int advancement, double latitude, double longitude,
-                    int importance, String description, Date date) {
+                    int importance, String description, long date) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -96,11 +96,11 @@ public class Incident {
         this.description = description;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 }

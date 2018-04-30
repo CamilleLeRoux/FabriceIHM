@@ -21,17 +21,17 @@ public class Data {
         //test tasks
         Date currentTime = Calendar.getInstance().getTime();
         this.incidents = new ArrayList<Incident>();
-        incidents.add(new Incident(1, "Chaise Cassée", "Charles",1,1,2,1,"YOLO",currentTime));
-        incidents.add(new Incident(2, "Inondation", "Camille",1,1,2,1,"YOLO",currentTime));
-        incidents.add(new Incident(3, "Ampoule claquée", "Camille",2,1,2,1,"YOLO",currentTime));
-        incidents.add(new Incident(4, "Nombre de prise de courants","HeavyHammer42",2,1,2,1,"YOLO",currentTime));
-        incidents.add(new Incident(5, "Rétroprojecteur déféctueux","Francis",3,1,2,1,"YOLO",currentTime));
+        incidents.add(new Incident(1, "Chaise Cassée", "Charles",1,1,2,1,"YOLO",currentTime.getTime()));
+        incidents.add(new Incident(2, "Inondation", "Camille",1,1,2,1,"YOLO",currentTime.getTime()));
+        incidents.add(new Incident(3, "Ampoule claquée", "Camille",2,1,2,1,"YOLO",currentTime.getTime()));
+        incidents.add(new Incident(4, "Nombre de prise de courants","HeavyHammer42",2,1,2,1,"YOLO",currentTime.getTime()));
+        incidents.add(new Incident(5, "Rétroprojecteur déféctueux","Francis",3,1,2,1,"YOLO",currentTime.getTime()));
         this.lastId = 5;
     }
 
     public static void addIncident(String title, String author, int advancement, double latitude, double longitude,int importance, String description, Date date) {
         ourInstance.incidents.add(
-                new Incident(ourInstance.lastId + 1, title, author, advancement, latitude, longitude, importance, description, date)
+                new Incident(ourInstance.lastId + 1, title, author, advancement, latitude, longitude, importance, description, date.getTime())
         );
     }
 
