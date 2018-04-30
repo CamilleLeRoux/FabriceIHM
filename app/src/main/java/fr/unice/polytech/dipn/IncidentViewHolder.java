@@ -2,6 +2,7 @@ package fr.unice.polytech.dipn;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -10,21 +11,27 @@ import android.widget.TextView;
 
 public class IncidentViewHolder extends RecyclerView.ViewHolder {
 
-    final TextView author;
+    final TextView date;
     final TextView title;
+    final ImageView icon;
 
     public IncidentViewHolder(View view) {
         super(view);
-        this.author = view.findViewById(R.id.cardAuthor);
+        this.date = view.findViewById(R.id.cardDate);
         this.title = view.findViewById(R.id.cardTitle);
+        this.icon = view.findViewById(R.id.icon);
     }
 
-    public TextView getAuthor() {
-        return author;
+    public TextView getDate() {
+        return date;
     }
 
     public TextView getTitle() {
         return title;
+    }
+
+    public ImageView getIcon() {
+        return icon;
     }
 
 }

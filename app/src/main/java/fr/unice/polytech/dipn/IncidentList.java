@@ -113,11 +113,11 @@ public class IncidentList extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "TO DO";
+                    return "A FAIRE";
                 case 1:
-                    return "IN PROGRESS";
+                    return "EN COURS";
                 case 2:
-                    return "DONE";
+                    return "FAIT";
             }
             return null;
         }

@@ -38,7 +38,19 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
 
         Incident a = incidentList.get(position);
 
-        holder.getAuthor().setText(a.getAuthor());
+        holder.getDate().setText(a.getDate());
         holder.getTitle().setText(a.getTitle());
+
+        switch(a.getImportance()) {
+            case 1:
+                holder.getIcon().setImageResource(R.drawable.emergency1);
+                break;
+            case 2:
+                holder.getIcon().setImageResource(R.drawable.emergency2);
+                break;
+            case 3:
+                holder.getIcon().setImageResource(R.drawable.emergency3);
+                break;
+        }
     }
 }
