@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.sql.SQLOutput;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,8 @@ public class IncidentPreviewFragment extends Fragment {
         values.put("DATE", currentTime.getTime());
 
         long newRowId = db.insert("INCIDENT", null, values);
+
+        System.out.println(newRowId);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
