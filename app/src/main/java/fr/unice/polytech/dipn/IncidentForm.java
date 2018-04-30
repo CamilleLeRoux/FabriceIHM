@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class IncidentForm extends AppCompatActivity {
 
     @Override
@@ -23,10 +26,11 @@ public class IncidentForm extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Date currentTime = Calendar.getInstance().getTime();
                 String author = editAuthor.getText().toString();
                 String title = editTitle.getText().toString();
                 if (!author.equals("") && !title.equals("")) {
-                    Data.addIncident(title,author,1);
+                    Data.addIncident(title,author,1,1,2,1,"YOLO",currentTime);
                     Intent intent = new Intent(IncidentForm.this, IncidentList.class);
                     startActivity(intent);
                 }
