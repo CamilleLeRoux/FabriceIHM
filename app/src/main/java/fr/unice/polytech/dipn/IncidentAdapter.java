@@ -3,10 +3,11 @@ package fr.unice.polytech.dipn;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+
+import fr.unice.polytech.dipn.DataBase.Incident;
 
 /**
  * Created by François on 29/04/2018.

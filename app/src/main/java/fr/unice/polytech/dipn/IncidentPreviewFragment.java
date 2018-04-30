@@ -1,21 +1,17 @@
 package fr.unice.polytech.dipn;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.sql.SQLOutput;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+import fr.unice.polytech.dipn.DataBase.Incident;
 
 /**
  * Created by François on 29/04/2018.
@@ -58,25 +54,6 @@ public class IncidentPreviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        DBHelper DbHelper = new DBHelper(getContext());
-        SQLiteDatabase db = DbHelper.getWritableDatabase();
-        Date currentTime = Calendar.getInstance().getTime();
-
-        ContentValues values = new ContentValues();
-        values.put("ID ", 30);
-        values.put("AUTHOR", "Foue");
-        values.put("TITLE", "Coup de soleil");
-        values.put("DESCRIPTION", "En plus y a des traces de lunettes");
-        values.put("ADVANCEMENT", 1);
-        values.put("IMPORTANCE", 1);
-        values.put("LATITUDE", 1);
-        values.put("LONGITUDE", 1);
-        values.put("DATE", currentTime.getTime());
-
-        long newRowId = db.insert("INCIDENT", null, values);
-
-        System.out.println(newRowId);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);

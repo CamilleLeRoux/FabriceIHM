@@ -1,5 +1,8 @@
-package fr.unice.polytech.dipn;
+package fr.unice.polytech.dipn.DataBase;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
 
 import java.util.Date;
@@ -8,15 +11,25 @@ import java.util.Date;
  * Created by François on 27/04/2018.
  */
 
+@Entity
 public class Incident {
+    @PrimaryKey
     private int id;
+    @ColumnInfo
     private String author;
+    @ColumnInfo
     private String title;
+    @ColumnInfo
     private int advancement;
+    @ColumnInfo
     private double latitude;
+    @ColumnInfo
     private double longitude;
+    @ColumnInfo
     private int importance;
+    @ColumnInfo
     private String description;
+    @ColumnInfo
     private String date;
 
     public Incident(int id, String title, String author, int advancement, double latitude, double longitude,

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import fr.unice.polytech.dipn.DataBase.Incident;
+
 public class Data {
     private static Data ourInstance = new Data();
     private ArrayList<Incident> incidents;
