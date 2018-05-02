@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn.DataBase;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,16 +16,22 @@ import java.util.List;
 public interface IncidentDAO {
 
     @Query("SELECT * FROM incident")
-    List<Incident> getAll();
+    LiveData<List<Incident>> getAllIncident();
 
     @Query("SELECT * FROM incident WHERE id IN (:incidentIds)")
-    List<Incident> loadAllByIds(int[] incidentIds);
+    List<Incident> loadAllIncidentByIds(int[] incidentIds);
 
     @Insert
     void insertAll(Incident... incidents);
 
+    @Insert
+    void insert(Incident incident);
+
     @Delete
     void delete(Incident incident);
+
+    @Query("DELETE FROM incident")
+    void deleteAll();
 
 
 }
