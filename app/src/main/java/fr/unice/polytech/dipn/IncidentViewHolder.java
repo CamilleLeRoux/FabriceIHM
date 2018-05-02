@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by François on 29/04/2018.
+ * Created by Margoulax on 29/04/2018.
  */
 
 public class IncidentViewHolder extends RecyclerView.ViewHolder {

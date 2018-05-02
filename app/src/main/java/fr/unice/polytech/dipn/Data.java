@@ -1,7 +1,7 @@
 package fr.unice.polytech.dipn;
 
 /**
- * Created by François on 29/04/2018.
+ * Created by Margoulax on 29/04/2018.
  */
 
 import java.text.SimpleDateFormat;

@@ -10,7 +10,7 @@ import java.util.List;
 import fr.unice.polytech.dipn.DataBase.Incident;
 
 /**
- * Created by François on 29/04/2018.
+ * Created by Margoulax on 29/04/2018.
  */
 
 public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
