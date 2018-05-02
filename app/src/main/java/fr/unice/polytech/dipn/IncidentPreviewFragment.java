@@ -1,17 +1,26 @@
 package fr.unice.polytech.dipn;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
+import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Margoulax on 29/04/2018.
@@ -23,6 +32,9 @@ public class IncidentPreviewFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private RecyclerView recyclerView;
+
+    private IncidentViewModel incidentViewModel;
+    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,16 +67,37 @@ public class IncidentPreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        incidentViewModel = ViewModelProviders.of(this).get(IncidentViewModel.class);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
         List<Incident> incidentList;
-        incidentList = Data.getInstance().getDataFilteredByLevel(getArguments().getInt(ARG_SECTION_NUMBER));
-        IncidentAdapter adapter = new IncidentAdapter(incidentList);
+        /*incidentList = Data.getInstance().getDataFilteredByLevel(getArguments().getInt(ARG_SECTION_NUMBER));
+        final IncidentAdapter adapter = new IncidentAdapter(incidentList);
+        RecyclerView recyclerView = view.findViewById(R.id.incidentView);
+        recyclerView.setAdapter(adapter);*/
+        final IncidentAdapter adapter = new IncidentAdapter(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.incidentView);
         recyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
+
+        incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
+            @Override
+            public void onChanged(@Nullable final List<Incident> incidents) {
+                // Update the cached copy of the words in the adapter.
+                ArrayList<Incident> filtered = new ArrayList<Incident>();
+                for (Incident i : incidents) {
+                    if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
+                        filtered.add(i);
+                    }
+                }
+
+                adapter.setIncident(filtered);
+            }
+        });
+
         return view;
     }
 
@@ -98,5 +131,19 @@ public class IncidentPreviewFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Incident word = new Incident(data.getStringExtra(IncidentForm.EXTRA_REPLY));
+            incidentViewModel.insert(word);
+        } else {
+            Toast.makeText(
+                    getContext(),
+                    R.string.empty_not_saved,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

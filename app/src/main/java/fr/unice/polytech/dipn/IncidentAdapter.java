@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,15 +16,18 @@ import fr.unice.polytech.dipn.DataBase.Incident;
 
 public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
 
-    List<Incident> incidentList;
+    private List<Incident> incidentList;
+    private final LayoutInflater mInflater;
 
-    public IncidentAdapter(List<Incident> incidentList) {
-        this.incidentList = incidentList;
+    public IncidentAdapter(Context context) {
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getItemCount() {
-        return incidentList.size();
+        if (incidentList != null)
+            return incidentList.size();
+        else return 0;
     }
 
     @Override
@@ -53,5 +57,10 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
                 holder.getIcon().setImageResource(R.drawable.emergency3);
                 break;
         }
+    }
+
+    void setIncident(List<Incident> incident){
+        incidentList = incident;
+        notifyDataSetChanged();
     }
 }

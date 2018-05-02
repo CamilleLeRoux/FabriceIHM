@@ -2,13 +2,14 @@ package fr.unice.polytech.dipn.DataBase;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
 
 import java.util.Date;
 
 /**
- * Created by François on 27/04/2018.
+ * Created by Margoulax on 27/04/2018.
  */
 
 @Entity
@@ -32,6 +33,7 @@ public class Incident {
     @ColumnInfo
     private String date;
 
+    @Ignore
     public Incident(int id, String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date) {
         this.id = id;
@@ -43,6 +45,18 @@ public class Incident {
         this.date = date;
         this.description = description;
         this.importance = importance;
+    }
+
+    public Incident(String title) {
+        this.title = title;
+        this.id = 1000;
+        this.author = "Admin";
+        this.advancement = 1;
+        this.latitude = 500;
+        this.longitude = 500;
+        this.date = "00-Tes-0000";
+        this.description = "Test Ajout";
+        this.importance = 1;
     }
 
     public int getId() {

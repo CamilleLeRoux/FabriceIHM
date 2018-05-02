@@ -53,7 +53,17 @@ public abstract class AppDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params) {
             dao.deleteAll();
             Incident incident = new Incident(100,"Hello","Admin",1,0,0,3,"Populate","00-Nul-0000");
+            Incident incident2 = new Incident(102,"Hello2","Admin",2,0,0,2,"Populate2","02-Nul-0000");
+            Incident incident3 = new Incident(103,"Hello3","Admin",2,0,0,2,"Populate3","03-Nul-0000");
+            Incident incident4 = new Incident(104,"Hello4","Admin",1,0,0,1,"Populate4","04-Nul-0000");
+            Incident incident5 = new Incident(105,"Hello5","Admin",3,0,0,3,"Populate5","05-Nul-0000");
+            Incident incident6 = new Incident(106,"Hello6","Admin",3,0,0,3,"Populate6","06-Nul-0000");
             dao.insert(incident);
+            dao.insert(incident2);
+            dao.insert(incident3);
+            dao.insert(incident4);
+            dao.insert(incident5);
+            dao.insert(incident6);
             return null;
         }
     }
