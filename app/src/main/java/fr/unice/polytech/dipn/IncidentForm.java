@@ -69,9 +69,10 @@ public class IncidentForm extends AppCompatActivity {
                     replyIntent.putExtra(EXTRA_REPLY, title);
                     setResult(RESULT_OK, replyIntent);
                     System.out.println("WORKS !!!!!!!!!!!!!!!!!!");
-                    //AppDatabase.getDatabase(getApplicationContext()).incidentDAO().insert(new Incident(title));
                     Incident word = new Incident(title);
                     incidentViewModel.insert(word);
+                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
+                    startActivity(intent);
                 }
                 finish();
             }
