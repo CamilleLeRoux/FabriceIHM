@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
 
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Margoulax on 27/04/2018.
@@ -48,8 +49,10 @@ public class Incident {
     }
 
     public Incident(String title) {
+        Random r = new Random();
+        int i1 = r.nextInt(80 - 65) + 65;
         this.title = title;
-        this.id = 1000;
+        this.id = i1;
         this.author = "Admin";
         this.advancement = 1;
         this.latitude = 500;
