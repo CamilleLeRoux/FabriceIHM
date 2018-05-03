@@ -62,13 +62,11 @@ public class IncidentForm extends AppCompatActivity {
                 Intent replyIntent = new Intent();
                 if ((TextUtils.isEmpty(editAuthor.getText()) && TextUtils.isEmpty(editTitle.getText())) || TextUtils.isEmpty(editAuthor.getText()) || TextUtils.isEmpty(editTitle.getText())) {
                     setResult(RESULT_CANCELED, replyIntent);
-                    System.out.println("EMPTY !!!!!!!!!!!!!!!!!!");
                 } else {
                     String author = editAuthor.getText().toString();
                     String title = editTitle.getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, title);
                     setResult(RESULT_OK, replyIntent);
-                    System.out.println("WORKS !!!!!!!!!!!!!!!!!!");
                     Incident word = new Incident(title);
                     incidentViewModel.insert(word);
                     Intent intent = new Intent(IncidentForm.this, IncidentList.class);

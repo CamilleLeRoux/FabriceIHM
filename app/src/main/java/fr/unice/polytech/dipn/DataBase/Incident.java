@@ -15,7 +15,7 @@ import java.util.Random;
 
 @Entity
 public class Incident {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo
     private String author;
@@ -35,9 +35,8 @@ public class Incident {
     private String date;
 
     @Ignore
-    public Incident(int id, String title, String author, int advancement, double latitude, double longitude,
+    public Incident(String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date) {
-        this.id = id;
         this.author = author;
         this.title = title;
         this.advancement = advancement;
@@ -49,10 +48,7 @@ public class Incident {
     }
 
     public Incident(String title) {
-        Random r = new Random();
-        int i1 = r.nextInt(80 - 65) + 65;
         this.title = title;
-        this.id = i1;
         this.author = "Admin";
         this.advancement = 1;
         this.latitude = 500;

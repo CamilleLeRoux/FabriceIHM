@@ -26,17 +26,17 @@ public class Data {
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(currentTime);
         this.incidents = new ArrayList<Incident>();
-        incidents.add(new Incident(1, "Chaise Cassée", "Charles",1,1,2,1,"YOLO",formattedDate));
-        incidents.add(new Incident(2, "Inondation", "Camille",1,1,2,3,"YOLO",formattedDate));
-        incidents.add(new Incident(3, "Ampoule claquée", "Camille",2,1,2,2,"YOLO",formattedDate));
-        incidents.add(new Incident(4, "Nombre de prise de courants","HeavyHammer42",2,1,2,1,"YOLO",formattedDate));
-        incidents.add(new Incident(5, "Rétroprojecteur déféctueux","Francis",3,1,2,1,"YOLO",formattedDate));
+        incidents.add(new Incident("Chaise Cassée", "Charles",1,1,2,1,"YOLO",formattedDate));
+        incidents.add(new Incident("Inondation", "Camille",1,1,2,3,"YOLO",formattedDate));
+        incidents.add(new Incident("Ampoule claquée", "Camille",2,1,2,2,"YOLO",formattedDate));
+        incidents.add(new Incident("Nombre de prise de courants","HeavyHammer42",2,1,2,1,"YOLO",formattedDate));
+        incidents.add(new Incident("Rétroprojecteur déféctueux","Francis",3,1,2,1,"YOLO",formattedDate));
         this.lastId = 5;
     }
 
     public static void addIncident(String title, String author, int advancement, double latitude, double longitude,int importance, String description, String date) {
         ourInstance.incidents.add(
-                new Incident(ourInstance.lastId + 1, title, author, advancement, latitude, longitude, importance, description, date)
+                new Incident( title, author, advancement, latitude, longitude, importance, description, date)
         );
     }
 
