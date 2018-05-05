@@ -1,8 +1,14 @@
 package fr.unice.polytech.dipn;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
@@ -11,6 +17,7 @@ public class IncidentDetails extends AppCompatActivity {
 
     private Incident incident;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +29,8 @@ public class IncidentDetails extends AppCompatActivity {
         final TextView date = findViewById(R.id.detailDate);
         final TextView description = findViewById(R.id.detailDescription);
         final ImageView icon = findViewById(R.id.detailIcon);
+        ProgressBar bar = findViewById(R.id.progressBar);
+        bar.setProgress(1+33*incident.getAdvancement(),true);
 
         title.setText(incident.getTitle());
         author.setText(incident.getAuthor());
@@ -41,4 +50,5 @@ public class IncidentDetails extends AppCompatActivity {
         }
 
     }
+
 }
