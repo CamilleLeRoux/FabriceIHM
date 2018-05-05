@@ -4,4 +4,5 @@
     <string name="title_activity_incident_list">IncidentList</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="empty_not_saved">Incident not saved because it is empty.</string>
+    <string name="google_maps_key">AIzaSyDJLDU-ysbgcPbJKKly8eQtXZICIiWVd5M</string>
 </resources>

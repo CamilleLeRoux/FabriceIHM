@@ -11,7 +11,7 @@ import android.os.AsyncTask;
  * Created by user on 30/04/2018.
  */
 
-@Database(entities = {Incident.class}, version = 1)
+@Database(entities = {Incident.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static RoomDatabase.Callback roomDatabaseCallback =
@@ -34,6 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     incidentInstance = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "incident_database")
                             .addCallback(roomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -52,12 +53,12 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             dao.deleteAll();
-            Incident incident = new Incident(100,"Hello","Admin",1,0,0,3,"Populate","00-Nul-0000");
-            Incident incident2 = new Incident(102,"Hello2","Admin",2,0,0,2,"Populate2","02-Nul-0000");
-            Incident incident3 = new Incident(103,"Hello3","Admin",2,0,0,2,"Populate3","03-Nul-0000");
-            Incident incident4 = new Incident(104,"Hello4","Admin",1,0,0,1,"Populate4","04-Nul-0000");
-            Incident incident5 = new Incident(105,"Hello5","Admin",3,0,0,3,"Populate5","05-Nul-0000");
-            Incident incident6 = new Incident(106,"Hello6","Admin",3,0,0,3,"Populate6","06-Nul-0000");
+            Incident incident = new Incident("Hello","Admin",1,0,0,3,"Populate","00-Nul-0000");
+            Incident incident2 = new Incident("Hello2","Admin",2,0,0,2,"Populate2","02-Nul-0000");
+            Incident incident3 = new Incident("Hello3","Admin",2,0,0,2,"Populate3","03-Nul-0000");
+            Incident incident4 = new Incident("Hello4","Admin",1,0,0,1,"Populate4","04-Nul-0000");
+            Incident incident5 = new Incident("Hello5","Admin",3,0,0,3,"Populate5","05-Nul-0000");
+            Incident incident6 = new Incident("Hello6","Admin",3,0,0,3,"Populate6","06-Nul-0000");
             dao.insert(incident);
             dao.insert(incident2);
             dao.insert(incident3);

@@ -140,17 +140,4 @@ public class IncidentPreviewFragment extends Fragment {
         super.onActivityCreated(bundle);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Incident word = new Incident(data.getStringExtra(IncidentForm.EXTRA_REPLY));
-            incidentViewModel.insert(word);
-        } else {
-            Toast.makeText(
-                    getContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
 }

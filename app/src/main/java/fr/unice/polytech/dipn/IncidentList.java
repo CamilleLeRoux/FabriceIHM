@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import static fr.unice.polytech.dipn.IncidentPreviewFragment.NEW_WORD_ACTIVITY_REQUEST_CODE;
+
 public class IncidentList extends AppCompatActivity {
 
     /**
@@ -63,6 +65,7 @@ public class IncidentList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(IncidentList.this, IncidentForm.class);
+                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
                 startActivity(intent);
             }
         });

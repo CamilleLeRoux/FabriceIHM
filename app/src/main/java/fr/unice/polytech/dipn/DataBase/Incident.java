@@ -8,6 +8,7 @@ import android.location.Location;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Margoulax on 27/04/2018.
@@ -15,7 +16,7 @@ import java.util.Date;
 
 @Entity
 public class Incident implements Serializable{
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo
     private String author;
@@ -35,9 +36,8 @@ public class Incident implements Serializable{
     private String date;
 
     @Ignore
-    public Incident(int id, String title, String author, int advancement, double latitude, double longitude,
+    public Incident(String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date) {
-        this.id = id;
         this.author = author;
         this.title = title;
         this.advancement = advancement;
@@ -50,7 +50,6 @@ public class Incident implements Serializable{
 
     public Incident(String title) {
         this.title = title;
-        this.id = 1000;
         this.author = "Admin";
         this.advancement = 1;
         this.latitude = 500;
