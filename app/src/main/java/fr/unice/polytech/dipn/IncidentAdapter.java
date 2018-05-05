@@ -16,11 +16,19 @@ import fr.unice.polytech.dipn.DataBase.Incident;
 
 public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(Incident incident);
+    }
+
     private List<Incident> incidentList;
     private final LayoutInflater mInflater;
+    private final OnItemClickListener listener;
+    private Context cont;
 
-    public IncidentAdapter(Context context) {
+    public IncidentAdapter(Context context, OnItemClickListener listener) {
         mInflater = LayoutInflater.from(context);
+        this.listener = listener;
+        this.cont = context;
     }
 
     @Override
@@ -57,6 +65,7 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
                 holder.getIcon().setImageResource(R.drawable.emergency3);
                 break;
         }
+        holder.bind(a, listener);
     }
 
     void setIncident(List<Incident> incident){

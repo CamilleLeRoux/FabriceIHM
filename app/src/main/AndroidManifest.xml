@@ -23,7 +23,8 @@
             android:name=".IncidentList"
             android:label="@string/title_activity_incident_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".IncidentForm"></activity>
+        <activity android:name=".IncidentForm" />
+        <activity android:name=".IncidentDetails"></activity>
     </application>
 
 </manifest>

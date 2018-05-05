@@ -1,9 +1,13 @@
 package fr.unice.polytech.dipn;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import fr.unice.polytech.dipn.DataBase.Incident;
 
 /**
  * Created by Margoulax on 29/04/2018.
@@ -24,6 +28,14 @@ public class IncidentViewHolder extends RecyclerView.ViewHolder {
 
     public TextView getDate() {
         return date;
+    }
+
+    public void bind(final Incident incident, final IncidentAdapter.OnItemClickListener listener) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(incident);
+            }
+        });
     }
 
     public TextView getTitle() {
