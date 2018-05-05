@@ -76,7 +76,14 @@ public class IncidentPreviewFragment extends Fragment {
         final IncidentAdapter adapter = new IncidentAdapter(incidentList);
         RecyclerView recyclerView = view.findViewById(R.id.incidentView);
         recyclerView.setAdapter(adapter);*/
-        final IncidentAdapter adapter = new IncidentAdapter(getContext());
+        final IncidentAdapter adapter = new IncidentAdapter(getContext(), new IncidentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Incident incident) {
+                Intent intent = new Intent(getContext(), IncidentDetails.class);
+                intent.putExtra("Incident", incident);
+                startActivityForResult(intent, 0);
+            }
+        });
         RecyclerView recyclerView = view.findViewById(R.id.incidentView);
         recyclerView.setAdapter(adapter);
 
