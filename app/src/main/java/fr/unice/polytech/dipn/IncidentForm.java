@@ -9,25 +9,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.logging.Logger;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,7 +34,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 
 import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
@@ -89,6 +85,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         final EditText editAuthor = findViewById((R.id.editAuthor));
         final EditText editTitle = findViewById((R.id.editTitle));
+
+        final SeekBar editEmergency = findViewById(R.id.emergencyBar);
+
+        final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

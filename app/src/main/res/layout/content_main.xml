@@ -11,34 +11,41 @@
     <Button
         android:id="@+id/adminButton"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Admin"
+        android:text="@string/admin"
+        app:layout_constraintBottom_toTopOf="@+id/technicButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/technicButton"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/technic"
         app:layout_constraintBottom_toTopOf="@+id/userButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.507" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/userButton"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="User"
+        android:text="@string/user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adminButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logoDIPN"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -49,6 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456"
         app:srcCompat="@drawable/sublime" />
 
 </android.support.constraint.ConstraintLayout>
