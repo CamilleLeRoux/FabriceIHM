@@ -207,8 +207,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone))
+                .setSmallIcon(R.drawable.ic_sublime)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
                 .setContentTitle("Info DIPN")
                 .setContentText("Votre incident a bien été crée");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
