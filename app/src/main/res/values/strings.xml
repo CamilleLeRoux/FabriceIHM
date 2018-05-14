@@ -11,6 +11,10 @@
     <string name="user">Utilisateur</string>
     <string name="technic">Techniciens</string>
     <string name="appliTitle">Bureau des\nIncidents\nTrimestriels des\nEcoles</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">2k0dpn1tYFppgM8elgRy1K1ly</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">07wtB0Y4n74oxnfuRzJW53N0erzX1UAgPgUO9zOzA0XMQZNoZz</string>
+    <string name="com.twitter.sdk.android.ACCESS_KEY">985877416857034752-vVMSHJau2901agu2gEpUm125ZjitlJL</string>
+    <string name="com.twitter.sdk.android.ACCESS_SECRET">3XHmbs0UxnSFKOJH72RNXc5Mk8ggCwdCDAMxIvbOW2nem</string>
     <string name="ok">Oui</string>
     <string name="cancel">Non</string>
     <string-array name="emergency_array">

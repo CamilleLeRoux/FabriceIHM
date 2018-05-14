@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +30,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,6 +40,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -106,6 +115,13 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        TwitterConfig config = new TwitterConfig.Builder(this)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.com_twitter_sdk_android_CONSUMER_KEY),getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
+
         final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
         editLocalisation.setAdapter(new ArrayAdapter<Position>(this, android.R.layout.simple_spinner_item, Position.values()));
         editLocalisation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -147,11 +163,20 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     String formattedDate = df.format(currentTime);
                     Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate);
                     incidentViewModel.insert(word);
-                    String tweetUrl = "https://twitter.com/intent/tweet?text=" + title;
-                    Uri uri = Uri.parse(tweetUrl);
-                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
-                    startActivity(intent);
+
+                    if (editEmergency.getProgress()>=1) {
+                        final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
+                        TwitterCore.getInstance().getSessionManager().setActiveSession(session);
+
+                        final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
+                                .session(session)
+                                .text("Incident Important:\n"+title+"\nLocalisation: "+editLocalisation.getSelectedItem().toString())
+                                .createIntent();
+                        startActivity(intentTweet);
+                    }
+
+//                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
+//                    startActivity(intent);
                 }
                 notificationcall();
                 finish();
