@@ -24,12 +24,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.logging.Logger;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 
 import fr.unice.polytech.dipn.DataBase.Incident;
@@ -43,15 +46,18 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
     private IncidentViewModel incidentViewModel;
     private GoogleMap googleMap;
-    private Location location;
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
-
+    private FusedLocationProviderClient mFusedLocationClient;
+    private double userLocationLatitude = 43.615788;
+    private double userLocationLongitude = 7.072512;
 
 
 
     @Override
     protected void onCreate (Bundle savedInstanceState){
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this,R.style.MyAlertDialogStyle);
 
@@ -122,33 +128,30 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
         }
+        System.out.println("YOLO LOCATION 1");
 
-        /*boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (isNetworkEnabled) {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-            location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-        if (isGPSEnabled) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
-            location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }*/
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            userLocationLatitude = location.getLatitude();
+                            userLocationLongitude = location.getLongitude();
+                            System.out.println("YOLO LOCATION 2");
+                        }
+                        System.out.println("YOLO LOCATION 3");
+                    }
+                });
     }
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        //getCurrentLocation();
-        LatLng position = new LatLng(43.615788,7.072512);
+        LatLng position = new LatLng(userLocationLatitude,userLocationLongitude);
         googleMap.addMarker(new MarkerOptions().position(position)
                 .title("Polytech Batiment E"));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
     }
 
     public void permission(){
@@ -169,6 +172,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         } else {
             // Permission has already been granted
+            getCurrentLocation();
         }
     }
 
@@ -181,6 +185,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     System.out.println("PERMISSION GRANTED");
+                    getCurrentLocation();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
