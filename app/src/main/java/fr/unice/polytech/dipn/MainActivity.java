@@ -2,8 +2,6 @@ package fr.unice.polytech.dipn;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,9 +21,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Button adminButton = (Button) findViewById(R.id.adminButton);
+        Button technicButton = (Button) findViewById(R.id.technicButton);
         Button userButton = (Button) findViewById(R.id.userButton);
 
         adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, IncidentList.class);
+                startActivity(intent);
+            }
+        });
+
+        technicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, IncidentList.class);
