@@ -147,17 +147,19 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate);
                     incidentViewModel.insert(word);
 
-                    final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY),getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)),985877416857034752L,"pbunice");
-                    TwitterCore.getInstance().getSessionManager().setActiveSession(session);
+                    if (editEmergency.getProgress()>=1) {
+                        final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
+                        TwitterCore.getInstance().getSessionManager().setActiveSession(session);
 
-                    final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
-                            .session(session)
-                            .text(title)
-                            .createIntent();
-                    startActivity(intentTweet);
+                        final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
+                                .session(session)
+                                .text("Incident Important:\n"+title+"\nLocalisation: "+editLocalisation.getSelectedItem().toString())
+                                .createIntent();
+                        startActivity(intentTweet);
+                    }
 
-                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
+//                    startActivity(intent);
                 }
                 notificationcall();
                 finish();
