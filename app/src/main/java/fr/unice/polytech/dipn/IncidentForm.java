@@ -53,8 +53,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
-    private double userLocationLatitude = 43.615788;
-    private double userLocationLongitude = 7.072512;
+    private double userLocationLatitude = 0;
+    private double userLocationLongitude = 0;
 
 
     @Override
@@ -69,7 +69,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
                 permission();
             }
         });
