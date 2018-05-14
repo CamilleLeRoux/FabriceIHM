@@ -26,10 +26,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.logging.Logger;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +36,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
@@ -57,7 +58,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private double userLocationLatitude = 43.616040;
     private double userLocationLongitude = 7.072189;
     private Position positionSpin;
-    private SupportMapFragment mapFragment;
 
 
     @Override
@@ -124,7 +124,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     String title = editTitle.getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, title);
                     setResult(RESULT_OK, replyIntent);
-                    Incident word = new Incident(title);
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                    String formattedDate = df.format(currentTime);
+                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress(),editTitle.getText().toString(),formattedDate);
                     incidentViewModel.insert(word);
                     String tweetUrl = "https://twitter.com/intent/tweet?text=" + title;
                     Uri uri = Uri.parse(tweetUrl);
