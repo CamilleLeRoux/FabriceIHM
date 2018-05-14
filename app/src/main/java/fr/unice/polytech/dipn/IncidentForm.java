@@ -19,12 +19,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.logging.Logger;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,8 +54,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
-    private double userLocationLatitude = 0;
-    private double userLocationLongitude = 0;
+    private double userLocationLatitude = 43.616040;
+    private double userLocationLongitude = 7.072189;
+    private Position positionSpin;
+    private SupportMapFragment mapFragment;
 
 
     @Override
@@ -88,11 +95,24 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
 
-        final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
+        editLocalisation.setAdapter(new ArrayAdapter<Position>(this, android.R.layout.simple_spinner_item, Position.values()));
+        editLocalisation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                positionSpin = (Position)editLocalisation.getSelectedItem();
+                LatLng position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(position)
+                        .title(positionSpin.getName()));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -151,10 +171,16 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        LatLng position = new LatLng(userLocationLatitude,userLocationLongitude);
+        LatLng position;
+        if(positionSpin != null) {
+            position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
+        }else{
+            position = new LatLng(userLocationLatitude,userLocationLongitude);
+        }
         googleMap.addMarker(new MarkerOptions().position(position)
                 .title("Polytech Batiment E"));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+
     }
 
     public void permission(){

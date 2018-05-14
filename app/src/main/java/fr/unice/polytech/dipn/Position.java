@@ -31,4 +31,8 @@ public enum Position {
     public double getLon() {
         return lon;
     }
+
+    @Override public String toString(){
+        return name;
+    }
 }
