@@ -94,6 +94,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         final EditText editTitle = findViewById((R.id.editTitle));
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
+        editEmergency.setMax(2);
 
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -127,7 +128,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Date currentTime = Calendar.getInstance().getTime();
                     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                     String formattedDate = df.format(currentTime);
-                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress(),editTitle.getText().toString(),formattedDate);
+                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate);
                     incidentViewModel.insert(word);
                     String tweetUrl = "https://twitter.com/intent/tweet?text=" + title;
                     Uri uri = Uri.parse(tweetUrl);
