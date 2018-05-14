@@ -50,6 +50,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,6 +72,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private double userLocationLatitude = 43.616040;
     private double userLocationLongitude = 7.072189;
     private Position positionSpin;
+    private Bitmap image;
 
     ImageView imageView;
 
@@ -161,7 +163,11 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Date currentTime = Calendar.getInstance().getTime();
                     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                     String formattedDate = df.format(currentTime);
-                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    image.recycle();
+                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
                     if (editEmergency.getProgress()>=1) {
@@ -295,6 +301,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         super.onActivityResult(requestCode, resultCode, data);
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         imageView.setImageBitmap(bitmap);
+        this.image = bitmap;
     }
 
 }

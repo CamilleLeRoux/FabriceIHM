@@ -4,8 +4,10 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
@@ -34,9 +36,11 @@ public class Incident implements Serializable{
     private String description;
     @ColumnInfo
     private String date;
+    @ColumnInfo
+    private byte[] image;
 
     public Incident(String title, String author, int advancement, double latitude, double longitude,
-                    int importance, String description, String date) {
+                    int importance, String description, String date, byte[] image) {
         this.author = author;
         this.title = title;
         this.advancement = advancement;
@@ -45,6 +49,8 @@ public class Incident implements Serializable{
         this.date = date;
         this.description = description;
         this.importance = importance;
+        this.image = image;
+
     }
 
     @Ignore
@@ -129,5 +135,13 @@ public class Incident implements Serializable{
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

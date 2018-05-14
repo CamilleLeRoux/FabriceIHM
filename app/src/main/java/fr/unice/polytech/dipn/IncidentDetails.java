@@ -1,5 +1,7 @@
 package fr.unice.polytech.dipn;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,6 +31,7 @@ public class IncidentDetails extends AppCompatActivity {
         final TextView date = findViewById(R.id.detailDate);
         final TextView description = findViewById(R.id.detailDescription);
         final ImageView icon = findViewById(R.id.detailIcon);
+        final ImageView image = findViewById(R.id.detailImage);
         ProgressBar bar = findViewById(R.id.progressBar);
         bar.setProgress(1+33*incident.getAdvancement(),true);
 
@@ -36,6 +39,9 @@ public class IncidentDetails extends AppCompatActivity {
         author.setText(incident.getAuthor());
         date.setText(incident.getDate());
         description.setText(incident.getDescription());
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length);
+        image.setImageBitmap(bitmap);
 
         switch(incident.getImportance()) {
             case 1:
