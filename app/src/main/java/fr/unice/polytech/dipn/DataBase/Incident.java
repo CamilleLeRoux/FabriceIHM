@@ -35,7 +35,6 @@ public class Incident implements Serializable{
     @ColumnInfo
     private String date;
 
-    @Ignore
     public Incident(String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date) {
         this.author = author;
@@ -48,6 +47,7 @@ public class Incident implements Serializable{
         this.importance = importance;
     }
 
+    @Ignore
     public Incident(String title) {
         this.title = title;
         this.author = "Admin";
