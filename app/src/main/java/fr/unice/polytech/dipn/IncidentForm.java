@@ -2,16 +2,19 @@ package fr.unice.polytech.dipn;
 
 import android.Manifest;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
@@ -58,6 +62,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private double userLocationLatitude = 43.616040;
     private double userLocationLongitude = 7.072189;
     private Position positionSpin;
+
+    ImageView imageView;
 
 
     @Override
@@ -112,6 +118,17 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
             }
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        Button cameraBtn = (Button) findViewById(R.id.cameraBnt);
+        imageView = (ImageView) findViewById(R.id.imageView);
+
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -239,9 +256,20 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 .setSmallIcon(R.drawable.ic_sublime)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
                 .setContentTitle("Info DIPN")
-                .setContentText("Votre incident a bien été crée");
+                .setContentText("Un nouvel incident a été ajouté");
+
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification.build());
+    }
+
+    @Override
+    protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+        imageView.setImageBitmap(bitmap);
     }
 
 }
