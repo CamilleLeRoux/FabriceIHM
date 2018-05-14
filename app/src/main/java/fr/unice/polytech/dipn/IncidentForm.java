@@ -282,7 +282,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
     public void notificationcall(){
 
-        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_sublime)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
@@ -300,6 +300,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+        if ( bitmap != null) { imageView.setVisibility(View.VISIBLE); }
         imageView.setImageBitmap(bitmap);
         this.image = bitmap;
     }
