@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,6 +35,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
@@ -90,9 +100,21 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
 
         final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.emergency_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        editLocalisation.setAdapter(adapter);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        TwitterConfig config = new TwitterConfig.Builder(this)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.com_twitter_sdk_android_CONSUMER_KEY),getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -107,9 +129,16 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     setResult(RESULT_OK, replyIntent);
                     Incident word = new Incident(title);
                     incidentViewModel.insert(word);
-                    String tweetUrl = "https://twitter.com/intent/tweet?text=" + title;
-                    Uri uri = Uri.parse(tweetUrl);
-                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+
+                    final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY),getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)),985877416857034752L,"pbunice");
+                    TwitterCore.getInstance().getSessionManager().setActiveSession(session);
+
+                    final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
+                            .session(session)
+                            .text(title)
+                            .createIntent();
+                    startActivity(intentTweet);
+
                     Intent intent = new Intent(IncidentForm.this, IncidentList.class);
                     startActivity(intent);
                 }
