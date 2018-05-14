@@ -7,6 +7,16 @@
     <string name="google_maps_key">AIzaSyDJLDU-ysbgcPbJKKly8eQtXZICIiWVd5M</string>
     <string name="popup_message">Voulez vous utiliser votre position gps pour déclarer l\'incident</string>
     <string name="popup_title">Utilisation position gps</string>
+    <string name="admin">Administrateur</string>
+    <string name="user">Utilisateur</string>
+    <string name="technic">Techniciens</string>
+    <string name="appliTitle">Bureau des\nIncidents\nTrimestriels des\nEcoles</string>
     <string name="ok">Oui</string>
     <string name="cancel">Non</string>
+    <string-array name="emergency_array">
+        <item>Bâtiment E</item>
+        <item>Bâtiment O</item>
+        <item>Forum</item>
+        <item>Les Lucioles</item>
+    </string-array>
 </resources>
