@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +46,10 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 
@@ -59,8 +64,9 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
-    private double userLocationLatitude = 43.615788;
-    private double userLocationLongitude = 7.072512;
+    private double userLocationLatitude = 43.616040;
+    private double userLocationLongitude = 7.072189;
+    private Position positionSpin;
 
 
     @Override
@@ -75,7 +81,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
                 permission();
             }
         });
@@ -98,15 +103,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         final EditText editTitle = findViewById((R.id.editTitle));
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
+        editEmergency.setMax(2);
 
-        final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.emergency_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editLocalisation.setAdapter(adapter);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         TwitterConfig config = new TwitterConfig.Builder(this)
@@ -116,6 +116,20 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
         Twitter.initialize(config);
 
+        final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
+        editLocalisation.setAdapter(new ArrayAdapter<Position>(this, android.R.layout.simple_spinner_item, Position.values()));
+        editLocalisation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                positionSpin = (Position)editLocalisation.getSelectedItem();
+                LatLng position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(position)
+                        .title(positionSpin.getName()));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -127,7 +141,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     String title = editTitle.getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, title);
                     setResult(RESULT_OK, replyIntent);
-                    Incident word = new Incident(title);
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                    String formattedDate = df.format(currentTime);
+                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate);
                     incidentViewModel.insert(word);
 
                     final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY),getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)),985877416857034752L,"pbunice");
@@ -181,10 +198,16 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        LatLng position = new LatLng(userLocationLatitude,userLocationLongitude);
+        LatLng position;
+        if(positionSpin != null) {
+            position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
+        }else{
+            position = new LatLng(userLocationLatitude,userLocationLongitude);
+        }
         googleMap.addMarker(new MarkerOptions().position(position)
                 .title("Polytech Batiment E"));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+
     }
 
     public void permission(){
@@ -236,8 +259,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone))
+                .setSmallIcon(R.drawable.ic_sublime)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
                 .setContentTitle("Info DIPN")
                 .setContentText("Votre incident a bien été crée");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
