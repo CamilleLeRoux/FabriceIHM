@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -100,6 +101,9 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     setResult(RESULT_OK, replyIntent);
                     Incident word = new Incident(title);
                     incidentViewModel.insert(word);
+                    String tweetUrl = "https://twitter.com/intent/tweet?text=" + title;
+                    Uri uri = Uri.parse(tweetUrl);
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     Intent intent = new Intent(IncidentForm.this, IncidentList.class);
                     startActivity(intent);
                 }
