@@ -1,15 +1,19 @@
 package fr.unice.polytech.dipn;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +49,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private Location location;
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
-
 
 
 
@@ -100,6 +103,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Intent intent = new Intent(IncidentForm.this, IncidentList.class);
                     startActivity(intent);
                 }
+                notificationcall();
                 finish();
                 }
         });
@@ -188,6 +192,18 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    public void notificationcall(){
+
+        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone))
+                .setContentTitle("Info DIPN")
+                .setContentText("Votre incident a bien été crée");
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification.build());
     }
 
 }
