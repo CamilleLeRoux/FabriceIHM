@@ -75,6 +75,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private Bitmap image;
 
     ImageView imageView;
+    Uri imageUri;
 
 
     @Override
@@ -147,6 +148,15 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
+            }
+        });
+
+        Button accessGaleryBnt =(Button) findViewById(R.id.acessGaleryBnt);
+
+        accessGaleryBnt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
             }
         });
 
@@ -299,10 +309,24 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-        if ( bitmap != null) { imageView.setVisibility(View.VISIBLE); }
-        imageView.setImageBitmap(bitmap);
-        this.image = bitmap;
+        if( resultCode == RESULT_OK && requestCode == 1) {
+            imageUri = data.getData();
+            if ( imageUri != null) { imageView.setVisibility(View.VISIBLE); }
+            imageView.setImageURI(imageUri);
+        }
+        else {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            if (bitmap != null) {
+                imageView.setVisibility(View.VISIBLE);
+            }
+            imageView.setImageBitmap(bitmap);
+            this.image = bitmap;
+        }
+    }
+
+    private void openGallery(){
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, 1);
     }
 
 }
