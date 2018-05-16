@@ -40,6 +40,7 @@ public class IncidentPreviewFragment extends Fragment {
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private OnFragmentInteractionListener mListener;
+    protected boolean isVisible;
 
     public IncidentPreviewFragment() {
 
@@ -70,9 +71,6 @@ public class IncidentPreviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
-
-        Bundle args = getArguments();
-        this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
@@ -111,6 +109,17 @@ public class IncidentPreviewFragment extends Fragment {
 
         return view;
     }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getUserVisibleHint()) {
+            isVisible = true;
+            refresh();
+        } else {
+            isVisible = false;
+            //Fragment stored in cache: DO NOTHING
+        }
+    }
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -118,6 +127,8 @@ public class IncidentPreviewFragment extends Fragment {
         }
     }
      public void refresh() {
+         Bundle args = getArguments();
+         this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
          incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
              @Override
              public void onChanged(@Nullable final List<Incident> incidents) {
@@ -132,7 +143,6 @@ public class IncidentPreviewFragment extends Fragment {
                  incidentAdapter.setIncident(filtered);
              }
          });
-         incidentAdapter.notifyItemChanged(getArguments().getInt(ARG_SECTION_NUMBER)+1);
      }
 
     @Override
