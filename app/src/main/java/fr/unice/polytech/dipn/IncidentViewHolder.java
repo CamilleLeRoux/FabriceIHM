@@ -30,10 +30,16 @@ public class IncidentViewHolder extends RecyclerView.ViewHolder {
         return date;
     }
 
-    public void bind(final Incident incident, final IncidentAdapter.OnItemClickListener listener) {
+    public void bind(final Incident incident, final IncidentAdapter.OnItemClickListener shortListener, final IncidentAdapter.OnItemLongClickListener longListener ) {
         itemView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                listener.onItemClick(incident);
+            @Override
+            public void onClick(View v) {
+                shortListener.onItemClick(incident);
+            }
+        });
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override public boolean onLongClick(View v) {
+                return longListener.onItemLongClick(incident);
             }
         });
     }

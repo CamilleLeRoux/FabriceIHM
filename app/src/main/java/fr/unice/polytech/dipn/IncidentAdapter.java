@@ -19,15 +19,20 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
     public interface OnItemClickListener {
         void onItemClick(Incident incident);
     }
+    public interface OnItemLongClickListener {
+        boolean onItemLongClick(Incident incident);
+    }
 
     private List<Incident> incidentList;
     private final LayoutInflater mInflater;
-    private final OnItemClickListener listener;
+    private final OnItemClickListener shortListener;
+    private final OnItemLongClickListener longListener;
     private Context cont;
 
-    public IncidentAdapter(Context context, OnItemClickListener listener) {
+    public IncidentAdapter(Context context, OnItemClickListener shortListener, OnItemLongClickListener longListener) {
         mInflater = LayoutInflater.from(context);
-        this.listener = listener;
+        this.shortListener = shortListener;
+        this.longListener = longListener;
         this.cont = context;
     }
 
@@ -65,7 +70,7 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
                 holder.getIcon().setImageResource(R.drawable.emergency3);
                 break;
         }
-        holder.bind(a, listener);
+        holder.bind(a, shortListener, longListener);
     }
 
     void setIncident(List<Incident> incident){
