@@ -65,7 +65,7 @@ public class IncidentPreviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
         incidentViewModel = ViewModelProviders.of(this).get(IncidentViewModel.class);
 
@@ -76,15 +76,25 @@ public class IncidentPreviewFragment extends Fragment {
         final IncidentAdapter adapter = new IncidentAdapter(incidentList);
         RecyclerView recyclerView = view.findViewById(R.id.incidentView);
         recyclerView.setAdapter(adapter);*/
+        final RecyclerView recyclerView = view.findViewById(R.id.incidentView);
         final IncidentAdapter adapter = new IncidentAdapter(getContext(), new IncidentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Incident incident) {
                 Intent intent = new Intent(getContext(), IncidentDetails.class);
                 intent.putExtra("Incident", incident);
                 startActivityForResult(intent, 0);
+            }}, new IncidentAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(Incident incident) {
+                if (incident.getAdvancement()<3) {
+                    System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
+                    incident.setAdvancement(incident.getAdvancement() + 1);
+                }
+                System.out.println("New state: "+incident.getAdvancement());
+                return incident.getAdvancement()<3;
             }
         });
-        RecyclerView recyclerView = view.findViewById(R.id.incidentView);
+
         recyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
