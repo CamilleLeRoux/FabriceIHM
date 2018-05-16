@@ -144,4 +144,9 @@ public class Incident implements Serializable{
     public void setImage(byte[] image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return title+" -> "+advancement;
+    }
 }

@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 
 import static fr.unice.polytech.dipn.IncidentPreviewFragment.NEW_WORD_ACTIVITY_REQUEST_CODE;
 
@@ -48,7 +51,8 @@ public class IncidentList extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        IncidentViewModel ivm = ViewModelProviders.of(this).get(IncidentViewModel.class);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), ivm);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -69,7 +73,6 @@ public class IncidentList extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
 
@@ -101,15 +104,18 @@ public class IncidentList extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private IncidentViewModel ivm;
+
+        public SectionsPagerAdapter(FragmentManager fm, IncidentViewModel ivm) {
             super(fm);
+            this.ivm = ivm;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return IncidentPreviewFragment.newInstance(position + 1);
+            return IncidentPreviewFragment.newInstance(position + 1, ivm);
         }
 
         @Override

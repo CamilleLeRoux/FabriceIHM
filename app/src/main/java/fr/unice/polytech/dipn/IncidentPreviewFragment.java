@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,8 +33,10 @@ public class IncidentPreviewFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private RecyclerView recyclerView;
+    private IncidentAdapter incidentAdapter;
+    private static IncidentViewModel incidentViewModel;
 
-    private IncidentViewModel incidentViewModel;
+    private static String INCIDENT_VIEW_MODEL = "ivm";
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private OnFragmentInteractionListener mListener;
@@ -49,11 +52,12 @@ public class IncidentPreviewFragment extends Fragment {
      * @return A new instance of fragment NewsGridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static IncidentPreviewFragment newInstance(int sectionNumber) {
+    public static IncidentPreviewFragment newInstance(int sectionNumber, IncidentViewModel ivm) {
         IncidentPreviewFragment fragment = new IncidentPreviewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        System.out.println(sectionNumber);
+        args.putSerializable(INCIDENT_VIEW_MODEL, ivm);
+        System.out.println("Loading Fragment "+sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,7 +71,8 @@ public class IncidentPreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
 
-        incidentViewModel = ViewModelProviders.of(this).get(IncidentViewModel.class);
+        Bundle args = getArguments();
+        this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
@@ -89,31 +94,20 @@ public class IncidentPreviewFragment extends Fragment {
                 if (incident.getAdvancement()<3) {
                     System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
                     incident.setAdvancement(incident.getAdvancement() + 1);
+                    refresh();
                 }
                 System.out.println("New state: "+incident.getAdvancement());
                 return incident.getAdvancement()<3;
             }
         });
+        this.incidentAdapter= adapter;
 
         recyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
-            @Override
-            public void onChanged(@Nullable final List<Incident> incidents) {
-                // Update the cached copy of the words in the adapter.
-                ArrayList<Incident> filtered = new ArrayList<Incident>();
-                for (Incident i : incidents) {
-                    if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
-                        filtered.add(i);
-                    }
-                }
-
-                adapter.setIncident(filtered);
-            }
-        });
+        refresh();
 
         return view;
     }
@@ -123,6 +117,23 @@ public class IncidentPreviewFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+     public void refresh() {
+         incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
+             @Override
+             public void onChanged(@Nullable final List<Incident> incidents) {
+                 // Update the cached copy of the words in the adapter.
+                 ArrayList<Incident> filtered = new ArrayList<Incident>();
+                 System.out.println(incidents);
+                 for (Incident i : incidents) {
+                     if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
+                         filtered.add(i);
+                     }
+                 }
+                 incidentAdapter.setIncident(filtered);
+             }
+         });
+         incidentAdapter.notifyItemChanged(getArguments().getInt(ARG_SECTION_NUMBER)+1);
+     }
 
     @Override
     public void onDetach() {

@@ -5,16 +5,17 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by user on 02/05/2018.
  */
 
-public class IncidentViewModel extends AndroidViewModel {
+public class IncidentViewModel extends AndroidViewModel implements Serializable {
 
-    private IncidentRepository repository;
-    private LiveData<List<Incident>> allIncident;
+    private static IncidentRepository repository;
+    private static LiveData<List<Incident>> allIncident;
 
     public IncidentViewModel(Application application) {
         super(application);
