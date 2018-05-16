@@ -35,4 +35,13 @@ public enum Position {
     @Override public String toString(){
         return name;
     }
+
+    static public String getNameLatLon(double lat, double lon){
+        for (Position p : Position.values()){
+            if(p.getLat() == lat && p.getLon() == lon){
+                return p.getName();
+            }
+        }
+        return "Rien";
+    }
 }

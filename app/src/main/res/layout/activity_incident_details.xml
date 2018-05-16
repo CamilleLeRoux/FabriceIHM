@@ -127,20 +127,21 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.gms.maps.MapView
+    <fragment
         android:id="@+id/detailMap"
-        android:layout_width="263dp"
-        android:layout_height="137dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="300dp"
+        android:layout_height="156dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/hardText4"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/detailImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailDescription"
-        app:layout_constraintVertical_bias="0.092" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
     <ImageView
         android:id="@+id/detailImage"
@@ -149,11 +150,9 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/hardText4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailMap"
         app:srcCompat="@android:drawable/ic_delete" />
 
 </android.support.constraint.ConstraintLayout>
