@@ -174,9 +174,12 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                     String formattedDate = df.format(currentTime);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    image.recycle();
+                    byte[] byteArray = null;
+                    if (image != null) {
+                        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byteArray = stream.toByteArray();
+                        image.recycle();
+                    }
                     Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
