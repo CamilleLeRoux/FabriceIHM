@@ -58,7 +58,7 @@ public class IncidentPreviewFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putSerializable(INCIDENT_VIEW_MODEL, ivm);
-        System.out.println("Loading Fragment "+sectionNumber);
+        System.out.println("Loading Fragment " + sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,22 +83,28 @@ public class IncidentPreviewFragment extends Fragment {
         final IncidentAdapter adapter = new IncidentAdapter(getContext(), new IncidentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Incident incident) {
-                Intent intent = new Intent(getContext(), IncidentDetails.class);
-                intent.putExtra("Incident", incident);
-                startActivityForResult(intent, 0);
-            }}, new IncidentAdapter.OnItemLongClickListener() {
+                if (!incident.getToShow()) {
+                    Intent intent = new Intent(getContext(), IncidentDetails.class);
+                    intent.putExtra("Incident", incident);
+                    startActivityForResult(intent, 0);
+                }
+            }
+        }, new IncidentAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(Incident incident) {
-                if (incident.getAdvancement()<3) {
-                    System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
-                    incident.setAdvancement(incident.getAdvancement() + 1);
-                    refresh();
-                }
-                System.out.println("New state: "+incident.getAdvancement());
-                return incident.getAdvancement()<3;
+//                if (incident.getAdvancement()<3) {
+//                    System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
+//                    incident.setAdvancement(incident.getAdvancement() + 1);
+//                    refresh();
+//                }
+//                System.out.println("New state: "+incident.getAdvancement());
+                System.out.println("Long click on " + incident);
+                incident.changeShow();
+                refresh();
+                return incident.getAdvancement() < 3;
             }
         });
-        this.incidentAdapter= adapter;
+        this.incidentAdapter = adapter;
 
         recyclerView.setAdapter(adapter);
 
@@ -109,10 +115,11 @@ public class IncidentPreviewFragment extends Fragment {
 
         return view;
     }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(getUserVisibleHint()) {
+        if (getUserVisibleHint()) {
             isVisible = true;
             refresh();
         } else {
@@ -126,24 +133,25 @@ public class IncidentPreviewFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-     public void refresh() {
-         Bundle args = getArguments();
-         this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
-         incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
-             @Override
-             public void onChanged(@Nullable final List<Incident> incidents) {
-                 // Update the cached copy of the words in the adapter.
-                 ArrayList<Incident> filtered = new ArrayList<Incident>();
-                 System.out.println(incidents);
-                 for (Incident i : incidents) {
-                     if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
-                         filtered.add(i);
-                     }
-                 }
-                 incidentAdapter.setIncident(filtered);
-             }
-         });
-     }
+
+    public void refresh() {
+        Bundle args = getArguments();
+        this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
+        incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
+            @Override
+            public void onChanged(@Nullable final List<Incident> incidents) {
+                // Update the cached copy of the words in the adapter.
+                ArrayList<Incident> filtered = new ArrayList<Incident>();
+                System.out.println(incidents);
+                for (Incident i : incidents) {
+                    if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
+                        filtered.add(i);
+                    }
+                }
+                incidentAdapter.setIncident(filtered);
+            }
+        });
+    }
 
     @Override
     public void onDetach() {

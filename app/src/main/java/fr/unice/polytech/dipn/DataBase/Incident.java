@@ -38,6 +38,8 @@ public class Incident implements Serializable{
     private String date;
     @ColumnInfo
     private byte[] image;
+    @Ignore
+    private boolean toShow;
 
     public Incident(String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date, byte[] image) {
@@ -50,6 +52,7 @@ public class Incident implements Serializable{
         this.description = description;
         this.importance = importance;
         this.image = image;
+        this.toShow=false;
 
     }
 
@@ -63,6 +66,7 @@ public class Incident implements Serializable{
         this.date = "00-Tes-0000";
         this.description = "Test Ajout";
         this.importance = 1;
+        this.toShow=false;
     }
 
     public int getId() {
@@ -143,6 +147,13 @@ public class Incident implements Serializable{
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void changeShow() {
+        this.toShow = !this.toShow;
+    }
+    public boolean getToShow() {
+        return toShow;
     }
 
     @Override
