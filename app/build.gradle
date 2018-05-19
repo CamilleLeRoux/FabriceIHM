@@ -16,6 +16,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -33,6 +39,7 @@ dependencies {
     implementation "android.arch.lifecycle:viewmodel:1.1.1"
     // alternatively, just LiveData
     implementation "android.arch.lifecycle:livedata:1.1.1"
+    compile 'com.google.firebase:firebase-core:15.0.2'
 
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
@@ -53,7 +60,12 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:15.0.1"
 
     compile 'com.twitter.sdk.android:twitter:3.1.1'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:15.0.2'
+
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 repositories {
     jcenter()

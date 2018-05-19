@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -40,6 +42,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -48,9 +52,12 @@ import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +71,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
 
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
+    ImageView imageView;
+    Uri imageUri;
     private IncidentViewModel incidentViewModel;
     private GoogleMap googleMap;
     private LocationManager mLocationManager;
@@ -73,10 +82,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private double userLocationLongitude = 7.072189;
     private Position positionSpin;
     private Bitmap image;
-
-    ImageView imageView;
-    Uri imageUri;
-
 
     @Override
     protected void onCreate (Bundle savedInstanceState){
@@ -177,8 +182,11 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] byteArray = stream.toByteArray();
                     image.recycle();
-                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    Incident word = new Incident(title, author, 1, positionSpin.getLat(), positionSpin.getLon(), editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate);
                     incidentViewModel.insert(word);
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
+                    String incidentId = mDatabase.push().getKey();
+                    mDatabase.child(incidentId).setValue(word);
 
                     if (editEmergency.getProgress()>=1) {
                         final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
@@ -194,7 +202,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 //                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
 //                    startActivity(intent);
                 }
-                notificationcall();
+                    notificationCall();
                 finish();
                 }
         });
@@ -290,7 +298,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void notificationcall(){
+    public void notificationCall() {
 
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -312,7 +320,13 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         if( resultCode == RESULT_OK && requestCode == 1) {
             imageUri = data.getData();
             if ( imageUri != null) { imageView.setVisibility(View.VISIBLE); }
-            imageView.setImageURI(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(convertToByte(imageUri), 0, convertToByte(imageUri).length);
+            if (bitmap == null) {
+                System.out.print("Fail to convert the picture");
+                return;
+            }
+            imageView.setImageBitmap(bitmap);
+            createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
         }
         else {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
@@ -321,6 +335,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
             imageView.setImageBitmap(bitmap);
             this.image = bitmap;
+            createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
         }
     }
 
@@ -329,4 +344,41 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         startActivityForResult(gallery, 1);
     }
 
+    private byte[] convertToByte(Uri uri) {
+        byte[] data = null;
+        try {
+            ContentResolver cr = getBaseContext().getContentResolver();
+            InputStream inputStream = cr.openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            data = baos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/DirName");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory().getPath());
+            wallpaperDirectory.mkdirs();
+        }
+
+        File file = new File(new File(Environment.getExternalStorageDirectory().getPath()), fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

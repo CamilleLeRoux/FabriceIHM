@@ -2,13 +2,11 @@ package fr.unice.polytech.dipn;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,8 +38,11 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final TextView description = findViewById(R.id.detailDescription);
         final ImageView icon = findViewById(R.id.detailIcon);
         final ImageView image = findViewById(R.id.detailImage);
+        if (image != null) {
+            image.setVisibility(View.VISIBLE);
+        }
         ProgressBar bar = findViewById(R.id.progressBar);
-        bar.setProgress(1+33*incident.getAdvancement(),true);
+        bar.setProgress(1 + 33 * incident.getAdvancement());
 
         title.setText(incident.getTitle());
         author.setText(incident.getAuthor());

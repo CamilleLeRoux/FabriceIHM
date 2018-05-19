@@ -4,6 +4,12 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 
 /**
@@ -12,6 +18,7 @@ import java.util.List;
 
 public class IncidentRepository {
 
+    List<Incident> test;
     private IncidentDAO incidentDAO;
     private LiveData<List<Incident>> allIncident;
 
@@ -19,6 +26,26 @@ public class IncidentRepository {
         AppDatabase db = AppDatabase.getDatabase(application);
         incidentDAO = db.incidentDAO();
         allIncident = incidentDAO.getAllIncident();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Incident climate = postSnapshot.getValue(Incident.class);
+                    allIncident.getValue().add(climate);
+                }
+
+
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("firebase error :" + firebaseError.getDetails());
+            }
+        });
+
     }
 
     LiveData<List<Incident>> getAllIncident() {

@@ -4,10 +4,6 @@ package fr.unice.polytech.dipn;
  * Created by Margoulax on 29/04/2018.
  */
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,10 +16,6 @@ public class Data {
     private ArrayList<Incident> incidents;
     private int lastId = 0;
 
-    public static Data getInstance() {
-        return ourInstance;
-    }
-
     private Data() {
         //test tasks
         Date currentTime = Calendar.getInstance().getTime();
@@ -31,17 +23,21 @@ public class Data {
         String formattedDate = df.format(currentTime);
         byte[] byteArray = "Test".getBytes();
         this.incidents = new ArrayList<Incident>();
-        incidents.add(new Incident("Chaise Cassée", "Charles",1,1,2,1,"YOLO",formattedDate,byteArray));
-        incidents.add(new Incident("Inondation", "Camille",1,1,2,3,"YOLO",formattedDate,byteArray));
-        incidents.add(new Incident("Ampoule claquée", "Camille",2,1,2,2,"YOLO",formattedDate,byteArray));
-        incidents.add(new Incident("Nombre de prise de courants","HeavyHammer42",2,1,2,1,"YOLO",formattedDate,byteArray));
-        incidents.add(new Incident("Rétroprojecteur déféctueux","Francis",3,1,2,1,"YOLO",formattedDate,byteArray));
+        incidents.add(new Incident("Chaise Cassée", "Charles", 1, 1, 2, 1, "YOLO", formattedDate));
+        incidents.add(new Incident("Inondation", "Camille", 1, 1, 2, 3, "YOLO", formattedDate));
+        incidents.add(new Incident("Ampoule claquée", "Camille", 2, 1, 2, 2, "YOLO", formattedDate));
+        incidents.add(new Incident("Nombre de prise de courants", "HeavyHammer42", 2, 1, 2, 1, "YOLO", formattedDate));
+        incidents.add(new Incident("Rétroprojecteur déféctueux", "Francis", 3, 1, 2, 1, "YOLO", formattedDate));
         this.lastId = 5;
+    }
+
+    public static Data getInstance() {
+        return ourInstance;
     }
 
     public static void addIncident(String title, String author, int advancement, double latitude, double longitude,int importance, String description, String date, byte[] image) {
         ourInstance.incidents.add(
-                new Incident( title, author, advancement, latitude, longitude, importance, description, date,image)
+                new Incident(title, author, advancement, latitude, longitude, importance, description, date)
         );
     }
 
