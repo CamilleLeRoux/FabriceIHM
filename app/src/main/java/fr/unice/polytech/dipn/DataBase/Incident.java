@@ -1,37 +1,66 @@
 package fr.unice.polytech.dipn.DataBase;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.Serializable;
 
 /**
  * Created by Margoulax on 27/04/2018.
  */
 
-
+@Entity
 public class Incident implements Serializable{
-
+    @PrimaryKey(autoGenerate = true)
     private int id;
-
+    @ColumnInfo
     private String author;
-
+    @ColumnInfo
     private String title;
-
+    @ColumnInfo
     private int advancement;
-
+    @ColumnInfo
     private double latitude;
-
+    @ColumnInfo
     private double longitude;
-
+    @ColumnInfo
     private int importance;
-
+    @ColumnInfo
     private String description;
-
+    @ColumnInfo
     private String date;
-
+    @ColumnInfo
     private byte[] image;
 
+    /*public Incident(String title, String author, int advancement, double latitude, double longitude,
+                    int importance, String description, String date) {
+        this.author = author;
+        this.title = title;
+        this.advancement = advancement;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.date = date;
+        this.description = description;
+        this.importance = importance;
+        this.image = image;
+
+    }*/
     public Incident() {
 
+    }
 
+    @Ignore
+    public Incident(String title) {
+        this.title = title;
+        this.author = "Admin";
+        this.advancement = 1;
+        this.latitude = 500;
+        this.longitude = 500;
+        this.date = "00-Tes-0000";
+        this.description = "Test Ajout";
+        this.importance = 1;
     }
 
     public int getId() {

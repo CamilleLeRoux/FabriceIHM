@@ -182,7 +182,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] byteArray = stream.toByteArray();
                     image.recycle();
-                    Incident word = new Incident(title, author, 1, positionSpin.getLat(), positionSpin.getLon(), editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate);
+                    Incident word = new Incident();
                     incidentViewModel.insert(word);
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
                     String incidentId = mDatabase.push().getKey();

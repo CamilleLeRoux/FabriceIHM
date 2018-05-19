@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "365134104474",
+    "firebase_url": "https://fabriceihm.firebaseio.com",
+    "project_id": "fabriceihm",
+    "storage_bucket": "fabriceihm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365134104474:android:3cde0f661e6bcd1b",
+        "android_client_info": {
+          "package_name": "fr.unice.polytech.dipn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365134104474-olasncmdn1bf28bqbpqp41rm553921k8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.unice.polytech.dipn",
+            "certificate_hash": "541337f041968ceae4ff2a54bcfd8176abca0686"
+          }
+        },
+        {
+          "client_id": "365134104474-13ioc0b15q09amgtr6jbj3skcvjeaodt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC95y3TGkRcShZQ-TQ0Bcg7CgwsTfEK-pc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365134104474-13ioc0b15q09amgtr6jbj3skcvjeaodt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

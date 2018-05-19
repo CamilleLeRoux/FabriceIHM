@@ -23,11 +23,7 @@ public class Data {
         String formattedDate = df.format(currentTime);
         byte[] byteArray = "Test".getBytes();
         this.incidents = new ArrayList<Incident>();
-        incidents.add(new Incident("Chaise Cassée", "Charles", 1, 1, 2, 1, "YOLO", formattedDate));
-        incidents.add(new Incident("Inondation", "Camille", 1, 1, 2, 3, "YOLO", formattedDate));
-        incidents.add(new Incident("Ampoule claquée", "Camille", 2, 1, 2, 2, "YOLO", formattedDate));
-        incidents.add(new Incident("Nombre de prise de courants", "HeavyHammer42", 2, 1, 2, 1, "YOLO", formattedDate));
-        incidents.add(new Incident("Rétroprojecteur déféctueux", "Francis", 3, 1, 2, 1, "YOLO", formattedDate));
+
         this.lastId = 5;
     }
 
@@ -36,9 +32,9 @@ public class Data {
     }
 
     public static void addIncident(String title, String author, int advancement, double latitude, double longitude,int importance, String description, String date, byte[] image) {
-        ourInstance.incidents.add(
-                new Incident(title, author, advancement, latitude, longitude, importance, description, date)
-        );
+        //ourInstance.incidents.add(
+        //   new Incident(title, author, advancement, latitude, longitude, importance, description, date)
+        // );
     }
 
     public ArrayList<Incident> getDataFilteredByLevel(int level) {
