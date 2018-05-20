@@ -236,6 +236,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
         LatLng position;
         if(positionSpin != null) {
             position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
@@ -251,9 +252,40 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onMapClick(LatLng point) {
 
-                googleMap.clear();
-                googleMap.addMarker(new MarkerOptions().position(point).title("Votre choix"));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+                float distanceMax = 150;
+
+                Location touchLocation = new Location("Touch Location");
+                touchLocation.setLatitude(point.latitude);
+                touchLocation.setLongitude(point.longitude);
+
+                Location batE = new Location("Batiment E");
+                batE.setLongitude(Position.BatimentE.getLon());
+                batE.setLatitude(Position.BatimentE.getLat());
+
+                Location luciole = new Location("Luciole");
+                luciole.setLatitude(Position.BatimentL.getLat());
+                luciole.setLongitude(Position.BatimentL.getLon());
+
+                if (touchLocation.distanceTo(batE) < distanceMax || touchLocation.distanceTo(luciole) < distanceMax) {
+                    googleMap.clear();
+                    googleMap.addMarker(new MarkerOptions().position(point).title("Votre choix"));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this,R.style.MyAlertDialogStyle);
+
+                    builder.setMessage(R.string.popupDistance_message)
+                            .setTitle(R.string.popupDistance_title);
+
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+
+                    builder.show();
+
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(batE.getLatitude(),batE.getLongitude()), 18));
+                }
             }
         });
 

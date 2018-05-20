@@ -6,6 +6,8 @@
     <string name="empty_not_saved">Incident not saved because it is empty.</string>
     <string name="google_maps_key">AIzaSyDJLDU-ysbgcPbJKKly8eQtXZICIiWVd5M</string>
     <string name="popup_message">Voulez vous utiliser votre position gps pour déclarer l\'incident</string>
+    <string name="popupDistance_message">La position choisie est trop loin de Polytech</string>
+    <string name="popupDistance_title">Probleme position choisie</string>
     <string name="popup_title">Utilisation position gps</string>
     <string name="admin">Administrateur</string>
     <string name="user">Utilisateur</string>
