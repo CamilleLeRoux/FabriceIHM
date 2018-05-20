@@ -71,6 +71,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationClient;
     private double userLocationLatitude = 43.616040;
     private double userLocationLongitude = 7.072189;
+    private double latToSend = 0;
+    private double lonToSend = 0;
     private Position positionSpin;
     private Bitmap image;
 
@@ -135,6 +137,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 googleMap.addMarker(new MarkerOptions().position(position)
                         .title(positionSpin.getName()));
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+                latToSend = positionSpin.getLat();
+                lonToSend = positionSpin.getLon();
             }
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -180,7 +184,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         byteArray = stream.toByteArray();
                         image.recycle();
                     }
-                    Incident word = new Incident(title,author,1,positionSpin.getLat(),positionSpin.getLon(),editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    Incident word = new Incident(title,author,1,latToSend,lonToSend,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
                     if (editEmergency.getProgress()>=1) {
@@ -270,6 +274,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     googleMap.clear();
                     googleMap.addMarker(new MarkerOptions().position(point).title("Votre choix"));
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+                    latToSend = touchLocation.getLatitude();
+                    lonToSend = touchLocation.getLongitude();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this,R.style.MyAlertDialogStyle);
 
