@@ -234,7 +234,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         LatLng position;
         if(positionSpin != null) {
@@ -245,6 +245,17 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.addMarker(new MarkerOptions().position(position)
                 .title("Polytech Batiment E"));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(point).title("Votre choix"));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+            }
+        });
 
     }
 
