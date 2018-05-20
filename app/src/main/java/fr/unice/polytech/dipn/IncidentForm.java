@@ -3,6 +3,7 @@ package fr.unice.polytech.dipn;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,9 +44,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -57,10 +65,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
@@ -82,6 +92,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private double userLocationLongitude = 7.072189;
     private Position positionSpin;
     private Bitmap image;
+    private StorageReference mStorageRef;
+    private Uri cast;
 
     @Override
     protected void onCreate (Bundle savedInstanceState){
@@ -165,6 +177,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         save.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     Intent replyIntent = new Intent();
@@ -179,14 +193,26 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                     String formattedDate = df.format(currentTime);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    image.recycle();
+                    //image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    //byte[] byteArray = stream.toByteArray();
+                    //image.recycle();
                     Incident word = new Incident();
+                    word.setAdvancement(1);
+                    word.setAuthor(author);
+                    word.setDate(formattedDate);
+                    word.setDescription(editTitle.getText().toString());
+                    word.setTitle(title);
+                    word.setImportance(editEmergency.getProgress() + 1);
+                    word.setLatitude(positionSpin.getLat());
+                    word.setLongitude(positionSpin.getLon());
                     incidentViewModel.insert(word);
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
                     String incidentId = mDatabase.push().getKey();
                     mDatabase.child(incidentId).setValue(word);
+                    if (imageUri != null) {
+
+                        mStorageRef.putFile(imageUri);
+                    }
 
                     if (editEmergency.getProgress()>=1) {
                         final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
@@ -320,13 +346,12 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         if( resultCode == RESULT_OK && requestCode == 1) {
             imageUri = data.getData();
             if ( imageUri != null) { imageView.setVisibility(View.VISIBLE); }
-            Bitmap bitmap = BitmapFactory.decodeByteArray(convertToByte(imageUri), 0, convertToByte(imageUri).length);
-            if (bitmap == null) {
-                System.out.print("Fail to convert the picture");
-                return;
-            }
-            imageView.setImageBitmap(bitmap);
-            createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
+            //if (bitmap == null) {
+            //    System.out.print("Fail to convert the picture");
+            //    return;
+            //Bitmap bitmap = BitmapFactory.decodeByteArray(convertToByte(imageUri), 0, convertToByte(imageUri).length);
+            imageView.setImageURI(imageUri);
+            //createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
         }
         else {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
@@ -335,16 +360,17 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
             imageView.setImageBitmap(bitmap);
             this.image = bitmap;
-            createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
+            //createDirectoryAndSaveFile(bitmap, "incidentPicture" + incidentViewModel.toString());
         }
     }
+
 
     private void openGallery(){
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, 1);
     }
 
-    private byte[] convertToByte(Uri uri) {
+    /*private byte[] convertToByte(Uri uri) {
         byte[] data = null;
         try {
             ContentResolver cr = getBaseContext().getContentResolver();
@@ -380,5 +406,5 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    } */
 }

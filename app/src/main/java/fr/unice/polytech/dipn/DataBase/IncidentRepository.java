@@ -26,25 +26,6 @@ public class IncidentRepository {
         AppDatabase db = AppDatabase.getDatabase(application);
         incidentDAO = db.incidentDAO();
         allIncident = incidentDAO.getAllIncident();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Incident climate = postSnapshot.getValue(Incident.class);
-                    allIncident.getValue().add(climate);
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("firebase error :" + firebaseError.getDetails());
-            }
-        });
 
     }
 

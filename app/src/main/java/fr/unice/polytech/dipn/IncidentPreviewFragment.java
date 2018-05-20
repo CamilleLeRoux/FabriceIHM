@@ -8,12 +8,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +42,13 @@ public class IncidentPreviewFragment extends Fragment {
     private RecyclerView recyclerView;
     private IncidentAdapter incidentAdapter;
     private static IncidentViewModel incidentViewModel;
+    private List<Incident> articleList;
+    IncidentAdapter mAdapter;
 
     private static String INCIDENT_VIEW_MODEL = "ivm";
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
-    private OnFragmentInteractionListener mListener;
+
     protected boolean isVisible;
 
     public IncidentPreviewFragment() {
@@ -74,101 +83,64 @@ public class IncidentPreviewFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_incident_recycler, container, false);
-        List<Incident> incidentList;
-        /*incidentList = Data.getInstance().getDataFilteredByLevel(getArguments().getInt(ARG_SECTION_NUMBER));
-        final IncidentAdapter adapter = new IncidentAdapter(incidentList);
-        RecyclerView recyclerView = view.findViewById(R.id.incidentView);
-        recyclerView.setAdapter(adapter);*/
-        final RecyclerView recyclerView = view.findViewById(R.id.incidentView);
-        final IncidentAdapter adapter = new IncidentAdapter(getContext(), new IncidentAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Incident incident) {
-                Intent intent = new Intent(getContext(), IncidentDetails.class);
-                intent.putExtra("Incident", incident);
-                startActivityForResult(intent, 0);
-            }}, new IncidentAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(Incident incident) {
-                if (incident.getAdvancement()<3) {
-                    System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
-                    incident.setAdvancement(incident.getAdvancement() + 1);
-                    refresh();
-                }
-                System.out.println("New state: "+incident.getAdvancement());
-                return incident.getAdvancement()<3;
-            }
-        });
-        this.incidentAdapter= adapter;
-
-        recyclerView.setAdapter(adapter);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-
-        refresh();
-
         return view;
-    }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(getUserVisibleHint()) {
-            isVisible = true;
-            refresh();
-        } else {
-            isVisible = false;
-            //Fragment stored in cache: DO NOTHING
-        }
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-     public void refresh() {
-         Bundle args = getArguments();
-         this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
-         incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
-             @Override
-             public void onChanged(@Nullable final List<Incident> incidents) {
-                 // Update the cached copy of the words in the adapter.
-                 ArrayList<Incident> filtered = new ArrayList<Incident>();
-                 System.out.println(incidents);
-                 for (Incident i : incidents) {
-                     if (i.getAdvancement() == getArguments().getInt(ARG_SECTION_NUMBER)) {
-                         filtered.add(i);
-                     }
-                 }
-                 incidentAdapter.setIncident(filtered);
-             }
-         });
-     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     @Override
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("incident");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+
+            public void onDataChange(DataSnapshot snapshot) {
+
+                articleList = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+
+                    Incident climate = postSnapshot.getValue(Incident.class);
+
+                    articleList.add(climate);
+
+                }
+
+
+
+                mAdapter = new IncidentAdapter(articleList);
+
+                setupRecyclerView();
+
+
+
+            }
+
+
+
+
+
+            @Override
+
+            public void onCancelled(DatabaseError firebaseError) {
+
+                System.out.println("firebase error :" + firebaseError.getDetails());
+
+            }
+
+        });
+
+    }
+
+    private void setupRecyclerView() {
+        RecyclerView recyclerView = getActivity().findViewById(R.id.incidentView);
+
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+        recyclerView.setAdapter(mAdapter);
     }
 
 }

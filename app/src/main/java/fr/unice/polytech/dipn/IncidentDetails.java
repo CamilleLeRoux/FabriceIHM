@@ -52,8 +52,8 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.detailMap);
         mapFragment.getMapAsync(this);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length);
-        image.setImageBitmap(bitmap);
+       // Bitmap bitmap = BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length);
+        // image.setImageBitmap(bitmap);
 
         switch(incident.getImportance()) {
             case 1:

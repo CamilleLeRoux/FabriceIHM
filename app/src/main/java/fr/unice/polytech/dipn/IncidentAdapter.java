@@ -1,9 +1,11 @@
 package fr.unice.polytech.dipn;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -24,16 +26,12 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
     }
 
     private List<Incident> incidentList;
-    private final LayoutInflater mInflater;
-    private final OnItemClickListener shortListener;
-    private final OnItemLongClickListener longListener;
+
     private Context cont;
 
-    public IncidentAdapter(Context context, OnItemClickListener shortListener, OnItemLongClickListener longListener) {
-        mInflater = LayoutInflater.from(context);
-        this.shortListener = shortListener;
-        this.longListener = longListener;
-        this.cont = context;
+    public IncidentAdapter(List<Incident> incidents ) {
+        incidentList = incidents;
+
     }
 
     @Override
@@ -52,7 +50,18 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(IncidentViewHolder holder, int position) {
+    public void onBindViewHolder(IncidentViewHolder holder, final int position) {
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            Intent intent = new Intent(v.getContext(), IncidentDetails.class);
+
+            intent.putExtra("Incident", incidentList.get(position));
+
+            v.getContext().startActivity(intent);            }
+
+        });
 
         Incident a = incidentList.get(position);
 
@@ -70,7 +79,7 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
                 holder.getIcon().setImageResource(R.drawable.emergency3);
                 break;
         }
-        holder.bind(a, shortListener, longListener);
+        //holder.bind(a, shortListener, longListener);
     }
 
     void setIncident(List<Incident> incident){
