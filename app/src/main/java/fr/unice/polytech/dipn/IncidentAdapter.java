@@ -79,14 +79,14 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
         if (a.getToShow()) {
             holder.getBackward().setVisibility(View.VISIBLE);
             holder.getForward().setVisibility(View.VISIBLE);
-            holder.getSuppr().setVisibility(View.VISIBLE);
+//            holder.getSuppr().setVisibility(View.VISIBLE);
             holder.getIcon().setVisibility(View.INVISIBLE);
             holder.getDate().setVisibility(View.INVISIBLE);
             holder.getTitle().setVisibility(View.INVISIBLE);
         } else {
             holder.getBackward().setVisibility(View.INVISIBLE);
             holder.getForward().setVisibility(View.INVISIBLE);
-            holder.getSuppr().setVisibility(View.INVISIBLE);
+//            holder.getSuppr().setVisibility(View.INVISIBLE);
             holder.getIcon().setVisibility(View.VISIBLE);
             holder.getDate().setVisibility(View.VISIBLE);
             holder.getTitle().setVisibility(View.VISIBLE);
@@ -120,15 +120,15 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
 
             }
         });
-        holder.getSuppr().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO suppr l'incident de la base de données
+//        holder.getSuppr().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //TODO suppr l'incident de la base de données
 //                incident.changeShow();
 //                incidentList.remove(incident);
 //                setIncident(incidentList);
-            }
-        });
+//            }
+//        });
         holder.bind(a, shortListener, longListener);
     }
 

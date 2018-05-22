@@ -20,7 +20,7 @@ public class IncidentViewHolder extends RecyclerView.ViewHolder {
     final ImageView icon;
     final ImageView backward;
     final ImageView forward;
-    final ImageView suppr;
+//    final ImageView suppr;
 
     public IncidentViewHolder(View view) {
         super(view);
@@ -29,7 +29,7 @@ public class IncidentViewHolder extends RecyclerView.ViewHolder {
         this.icon = view.findViewById(R.id.icon);
         this.backward = view.findViewById(R.id.backwardButton);
         this.forward = view.findViewById(R.id.forwardButton);
-        this.suppr = view.findViewById(R.id.supprButton);
+//        this.suppr = view.findViewById(R.id.supprButton);
     }
 
     public TextView getDate() {
@@ -67,7 +67,7 @@ public class IncidentViewHolder extends RecyclerView.ViewHolder {
         return forward;
     }
 
-    public ImageView getSuppr() {
-        return suppr;
-    }
+//    public ImageView getSuppr() {
+//        return suppr;
+//    }
 }

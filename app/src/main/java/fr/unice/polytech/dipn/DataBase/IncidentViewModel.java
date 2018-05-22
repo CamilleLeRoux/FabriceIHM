@@ -30,4 +30,6 @@ public class IncidentViewModel extends AndroidViewModel implements Serializable 
     public void insert(Incident incident) {
         this.repository.insert(incident);
     }
+
+    public void delete(Incident incident) {this.repository.delete(incident);}
 }
