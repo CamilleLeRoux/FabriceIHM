@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+
+import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Button adminButton = (Button) findViewById(R.id.adminButton);
         Button technicButton = (Button) findViewById(R.id.technicButton);
         Button userButton = (Button) findViewById(R.id.userButton);
+        Instance.getInstance().setIncidentViewModel(ViewModelProviders.of(this).get(IncidentViewModel.class));
 
         adminButton.setOnClickListener(new View.OnClickListener() {
             @Override

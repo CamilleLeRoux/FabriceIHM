@@ -25,8 +25,12 @@ public class IncidentRepository {
         return allIncident;
     }
 
-    public void insert (Incident incident) {
+    public void insert(Incident incident) {
         new insertAsyncTask(incidentDAO).execute(incident);
+    }
+
+    public void delete(Incident incident) {
+        new deleteAsyncTask(incidentDAO).execute(incident);
     }
 
     private static class insertAsyncTask extends AsyncTask<Incident, Void, Void> {
@@ -40,6 +44,21 @@ public class IncidentRepository {
         @Override
         protected Void doInBackground(final Incident... params) {
             mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    private static class deleteAsyncTask extends AsyncTask<Incident, Void, Void> {
+
+        private IncidentDAO mAsyncTaskDao;
+
+        deleteAsyncTask(IncidentDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Incident... params) {
+            mAsyncTaskDao.delete(params[0]);
             return null;
         }
     }

@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,10 +23,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
+import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 
 public class IncidentDetails extends AppCompatActivity implements OnMapReadyCallback {
 
     private Incident incident;
+    private IncidentViewModel ivm;
     private GoogleMap googleMap;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -33,6 +37,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incident_details);
         this.incident = (Incident) getIntent().getSerializableExtra("Incident");
+        this.ivm = Instance.getInstance().getIncidentViewModel();
 
         final TextView title = findViewById(R.id.detailTitle);
         final TextView author = findViewById(R.id.detailAuthor);
@@ -40,8 +45,41 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final TextView description = findViewById(R.id.detailDescription);
         final ImageView icon = findViewById(R.id.detailIcon);
         final ImageView image = findViewById(R.id.detailImage);
-        ProgressBar bar = findViewById(R.id.progressBar);
-        bar.setProgress(1+33*incident.getAdvancement(),true);
+
+        final ImageView ileft = findViewById(R.id.detailLeft);
+        final ImageView iright = findViewById(R.id.detailRight);
+        final ImageView isuppr = findViewById(R.id.detailSuppr);
+
+        refreshProgressBar();
+
+        ileft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(incident.getAdvancement()>1) {
+                    incident.setAdvancement(incident.getAdvancement()-1);
+                    System.out.println("New state: "+incident.getAdvancement());
+                    refreshProgressBar();
+                }
+            }
+        });
+        iright.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(incident.getAdvancement()<3) {
+                    incident.setAdvancement(incident.getAdvancement()+1);
+                    System.out.println("New state: "+incident.getAdvancement());
+                    refreshProgressBar();
+                }
+            }
+        });
+        isuppr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivm.delete(incident);
+                Intent intent = new Intent(getBaseContext(), IncidentList.class);
+                startActivity(intent);
+            }
+        });
 
         title.setText(incident.getTitle());
         author.setText(incident.getAuthor());
@@ -77,6 +115,12 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                 .title(Position.getNameLatLon(incident.getLatitude(),incident.getLongitude())));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void refreshProgressBar() {
+        ProgressBar bar = findViewById(R.id.progressBar);
+        bar.setProgress(1+33*incident.getAdvancement(),true);
     }
 
 }

@@ -69,8 +69,22 @@ public class IncidentList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(IncidentList.this, IncidentForm.class);
+                intent.putExtra("fromTweet",false);
                 startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
-                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton twitfab = findViewById(R.id.twitterButton);
+        if(Instance.getInstance().getSession().equals("admin")) {
+            twitfab.setVisibility(View.VISIBLE);
+        } else {
+            twitfab.setVisibility(View.INVISIBLE);
+        }
+        twitfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(IncidentList.this, TwitterList.class);
+                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
             }
         });
     }
@@ -115,7 +129,7 @@ public class IncidentList extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return IncidentPreviewFragment.newInstance(position + 1, ivm);
+            return IncidentPreviewFragment.newInstance(position + 1);
         }
 
         @Override

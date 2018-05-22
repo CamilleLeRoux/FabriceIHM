@@ -67,7 +67,6 @@ import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 public class IncidentForm extends AppCompatActivity implements OnMapReadyCallback {
 
 
-
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
     private IncidentViewModel incidentViewModel;
     private GoogleMap googleMap;
@@ -110,7 +109,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         builder.show();
 
-        incidentViewModel = ViewModelProviders.of(this).get(IncidentViewModel.class);
+        incidentViewModel = Instance.getInstance().getIncidentViewModel();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incident_form);
@@ -119,6 +118,13 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         final EditText editAuthor = findViewById((R.id.editAuthor));
         final EditText editTitle = findViewById((R.id.editTitle));
+
+        boolean fromTweet = getIntent().getBooleanExtra("fromTweet", false);
+        System.out.println("From Tweet flux? " + fromTweet);
+        if (fromTweet) {
+            System.out.println("Text from tweet: " + getIntent().getStringExtra("textFromTweet"));
+            editTitle.setText(getIntent().getStringExtra("textFromTweet"));
+        }
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
         editEmergency.setMax(2);
@@ -129,7 +135,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
-                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.com_twitter_sdk_android_CONSUMER_KEY),getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.com_twitter_sdk_android_CONSUMER_KEY), getString(R.string.com_twitter_sdk_android_CONSUMER_SECRET)))
                 .debug(true)
                 .build();
         Twitter.initialize(config);
@@ -151,6 +157,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 latToSend = positionSpin.getLat();
                 lonToSend = positionSpin.getLon();
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -174,7 +181,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button accessGaleryBnt =(Button) findViewById(R.id.acessGaleryBnt);
+        Button accessGaleryBnt = (Button) findViewById(R.id.acessGaleryBnt);
 
         accessGaleryBnt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,8 +191,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         save.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    Intent replyIntent = new Intent();
+            public void onClick(View view) {
+                Intent replyIntent = new Intent();
                 if ((TextUtils.isEmpty(editAuthor.getText()) && TextUtils.isEmpty(editTitle.getText())) || TextUtils.isEmpty(editAuthor.getText()) || TextUtils.isEmpty(editTitle.getText())) {
                     setResult(RESULT_CANCELED, replyIntent);
                 } else {
@@ -206,15 +213,30 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Incident word = new Incident(title,author,1,latToSend,lonToSend,positionRoomSpin,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
-                    if (editEmergency.getProgress()>=1 && Instance.getInstance().getSession().equals("admin")) {
+                    if (editEmergency.getProgress() >= 1 && Instance.getInstance().getSession().equals("admin")) {
                         final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
                         TwitterCore.getInstance().getSessionManager().setActiveSession(session);
 
-                        final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
-                                .session(session)
-                                .text("Incident Important:\n"+title+"\nLocalisation: "+editLocalisation.getSelectedItem().toString())
-                                .createIntent();
-                        startActivity(intentTweet);
+                        if (image != null) {
+
+                            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                            image.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                            String path = MediaStore.Images.Media.insertImage(getBaseContext().getContentResolver(), image, "Title", null);
+                            Uri uri = Uri.parse(path);
+
+                            final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
+                                    .session(session)
+                                    .text("Incident Important:\n" + title + "\nLocalisation: " + editLocalisation.getSelectedItem().toString())
+                                    .image(uri)
+                                    .createIntent();
+                            startActivity(intentTweet);
+                        } else {
+                            final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
+                                    .session(session)
+                                    .text("Incident Important:\n" + title + "\nLocalisation: " + editLocalisation.getSelectedItem().toString())
+                                    .createIntent();
+                            startActivity(intentTweet);
+                        }
                     }
 
 //                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
@@ -222,7 +244,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 notificationcall();
                 finish();
-                }
+            }
         });
     }
 
@@ -367,7 +389,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void notificationcall(){
+    public void notificationcall() {
 
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -377,21 +399,22 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 .setContentText("Un nouvel incident a été ajouté");
 
         Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification.build());
     }
 
     @Override
-    protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( resultCode == RESULT_OK && requestCode == 1) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
             imageUri = data.getData();
-            if ( imageUri != null) { imageView.setVisibility(View.VISIBLE); }
+            if (imageUri != null) {
+                imageView.setVisibility(View.VISIBLE);
+            }
             imageView.setImageURI(imageUri);
-        }
-        else {
+        } else {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             if (bitmap != null) {
                 imageView.setVisibility(View.VISIBLE);
@@ -401,7 +424,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void openGallery(){
+    private void openGallery() {
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, 1);
     }

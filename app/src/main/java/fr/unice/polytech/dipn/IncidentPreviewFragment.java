@@ -34,9 +34,7 @@ public class IncidentPreviewFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private IncidentAdapter incidentAdapter;
-    private static IncidentViewModel incidentViewModel;
-
-    private static String INCIDENT_VIEW_MODEL = "ivm";
+    private IncidentViewModel incidentViewModel;
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private OnFragmentInteractionListener mListener;
@@ -53,11 +51,10 @@ public class IncidentPreviewFragment extends Fragment {
      * @return A new instance of fragment NewsGridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static IncidentPreviewFragment newInstance(int sectionNumber, IncidentViewModel ivm) {
+    public static IncidentPreviewFragment newInstance(int sectionNumber) {
         IncidentPreviewFragment fragment = new IncidentPreviewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        args.putSerializable(INCIDENT_VIEW_MODEL, ivm);
         System.out.println("Loading Fragment " + sectionNumber);
         fragment.setArguments(args);
         return fragment;
@@ -92,12 +89,6 @@ public class IncidentPreviewFragment extends Fragment {
         }, new IncidentAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(Incident incident) {
-//                if (incident.getAdvancement()<3) {
-//                    System.out.println("Moving the item " + incident.getTitle() + " from state " + incident.getAdvancement() + " to state " + (incident.getAdvancement() + 1));
-//                    incident.setAdvancement(incident.getAdvancement() + 1);
-//                    refresh();
-//                }
-//                System.out.println("New state: "+incident.getAdvancement());
                 System.out.println("Long click on " + incident);
                 if(Instance.getInstance().getSession().equals("admin") || Instance.getInstance().getSession().equals("technic")) {
                     incident.changeShow();
@@ -137,8 +128,7 @@ public class IncidentPreviewFragment extends Fragment {
     }
 
     public void refresh() {
-        Bundle args = getArguments();
-        this.incidentViewModel = (IncidentViewModel) args.getSerializable("ivm");
+        this.incidentViewModel = Instance.getInstance().getIncidentViewModel();
         incidentViewModel.getAllIncident().observe(this, new Observer<List<Incident>>() {
             @Override
             public void onChanged(@Nullable final List<Incident> incidents) {
