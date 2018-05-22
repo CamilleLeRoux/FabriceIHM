@@ -64,7 +64,7 @@ public abstract class AppDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params) {
             dao.deleteAll();
             byte[] byteArray = "Test".getBytes();
-            Incident incident = new Incident("Chaise cassée","Charles",1,0,0,1,"Une des chaise n'a plus de dossier. Elle a été mise au fond de la classe","05-05-2018",byteArray);
+            Incident incident = new Incident("Chaise cassée","Charles",1,41.842004, -89.485902,1,"Une des chaise n'a plus de dossier. Elle a été mise au fond de la classe","05-05-2018",byteArray);
             Incident incident2 = new Incident("Inondation","Admin",2,0,0,3,"Un des robinets des toilettes est cassé ce qui provoque une inondation générale","26-04-2018",byteArray);
             Incident incident3 = new Incident("Rétroprojecteur défectueux","Admin",3,0,0,2,"Le rétroprojecteur emet un petit bruit toutes les dizaines de secondes","04-05-2018",byteArray);
             Incident incident4 = new Incident("Porte qui grince","François",1,44.3333,1.2167,1,null,"01-05-2018",byteArray);

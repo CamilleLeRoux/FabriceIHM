@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         adminButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Instance.getInstance().setSession("admin");
                 Intent intent = new Intent(MainActivity.this, IncidentList.class);
                 startActivity(intent);
             }
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         technicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Instance.getInstance().setSession("technic");
                 Intent intent = new Intent(MainActivity.this, IncidentList.class);
                 startActivity(intent);
             }
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Instance.getInstance().setSession("user");
                 Intent intent = new Intent(MainActivity.this, IncidentList.class);
                 startActivity(intent);
             }
