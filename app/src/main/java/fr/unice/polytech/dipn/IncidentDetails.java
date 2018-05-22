@@ -45,6 +45,8 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final TextView description = findViewById(R.id.detailDescription);
         final ImageView icon = findViewById(R.id.detailIcon);
         final ImageView image = findViewById(R.id.detailImage);
+        final TextView batiment = findViewById(R.id.detailBat);
+        final TextView salle = findViewById(R.id.detailRoom);
 
         final ImageView ileft = findViewById(R.id.detailLeft);
         final ImageView iright = findViewById(R.id.detailRight);
@@ -85,6 +87,13 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         author.setText(incident.getAuthor());
         date.setText(incident.getDate());
         description.setText(incident.getDescription());
+        String bat = Position.getNameLatLon(incident.getLatitude(),incident.getLongitude());
+        if(!bat.equals("Rien")){
+            batiment.setText(bat);
+        }else{
+            batiment.setText("-----");
+        }
+        salle.setText(incident.getRoom());
 
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.detailMap);
         mapFragment.getMapAsync(this);
