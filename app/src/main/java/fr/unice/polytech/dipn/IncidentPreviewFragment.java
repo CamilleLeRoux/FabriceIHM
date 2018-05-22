@@ -99,8 +99,10 @@ public class IncidentPreviewFragment extends Fragment {
 //                }
 //                System.out.println("New state: "+incident.getAdvancement());
                 System.out.println("Long click on " + incident);
-                incident.changeShow();
-                refresh();
+                if(Instance.getInstance().getSession().equals("admin") || Instance.getInstance().getSession().equals("technic")) {
+                    incident.changeShow();
+                    refresh();
+                }
                 return incident.getAdvancement() < 3;
             }
         });

@@ -187,7 +187,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     Incident word = new Incident(title,author,1,latToSend,lonToSend,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
-                    if (editEmergency.getProgress()>=1) {
+                    if (editEmergency.getProgress()>=1 && Instance.getInstance().getSession().equals("admin")) {
                         final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
                         TwitterCore.getInstance().getSessionManager().setActiveSession(session);
 
