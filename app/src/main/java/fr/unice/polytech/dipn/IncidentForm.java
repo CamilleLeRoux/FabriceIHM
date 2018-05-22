@@ -38,6 +38,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -70,11 +72,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
     private IncidentViewModel incidentViewModel;
     private GoogleMap googleMap;
-    private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
-    private double userLocationLatitude = 0;//43.616040;
-    private double userLocationLongitude = 0;//7.072189;
+    private double userLocationLatitude = 0;
+    private double userLocationLongitude = 0;
     private double latToSend = 0;
     private double lonToSend = 0;
     private Position positionSpin;
@@ -132,6 +133,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
@@ -210,7 +213,12 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         byteArray = stream.toByteArray();
                         image.recycle();
                     }
-                    Incident word = new Incident(title,author,1,latToSend,lonToSend,positionRoomSpin,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    Incident word;
+                    if(userPosition){
+                        word = new Incident(title,author,1,userLocationLatitude,userLocationLongitude,"-----",editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    }else {
+                        word = new Incident(title, author, 1, latToSend, lonToSend, positionRoomSpin, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
+                    }
                     incidentViewModel.insert(word);
 
                     if (editEmergency.getProgress() >= 1 && Instance.getInstance().getSession().equals("admin")) {
@@ -261,20 +269,23 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
         }
-        System.out.println("YOLO LOCATION 1");
 
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            userLocationLatitude = location.getLatitude();
-                            userLocationLongitude = location.getLongitude();
-                            System.out.println("YOLO LOCATION 2");
-                        }
-                        System.out.println("YOLO LOCATION 3");
-                    }
-                });
+        Task<Location> locationTask = mFusedLocationClient.getLastLocation().
+                addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    googleMap.clear();
+                    googleMap.addMarker(new MarkerOptions().position(latLng)
+                            .title("Votre position"));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+                    userLocationLatitude = location.getLatitude();
+                    userLocationLongitude = location.getLongitude();
+                }
+            }
+        });
     }
 
 
