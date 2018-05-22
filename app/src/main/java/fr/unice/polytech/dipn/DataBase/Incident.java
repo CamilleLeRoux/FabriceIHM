@@ -31,6 +31,8 @@ public class Incident implements Serializable{
     @ColumnInfo
     private double longitude;
     @ColumnInfo
+    private String room;
+    @ColumnInfo
     private int importance;
     @ColumnInfo
     private String description;
@@ -41,13 +43,14 @@ public class Incident implements Serializable{
     @Ignore
     private boolean toShow;
 
-    public Incident(String title, String author, int advancement, double latitude, double longitude,
+    public Incident(String title, String author, int advancement, double latitude, double longitude, String room,
                     int importance, String description, String date, byte[] image) {
         this.author = author;
         this.title = title;
         this.advancement = advancement;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.room = room;
         this.date = date;
         this.description = description;
         this.importance = importance;
@@ -115,6 +118,14 @@ public class Incident implements Serializable{
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public int getImportance() {

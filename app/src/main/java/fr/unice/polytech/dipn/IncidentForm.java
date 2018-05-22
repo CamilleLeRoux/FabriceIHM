@@ -11,10 +11,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +34,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -69,13 +74,14 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager mLocationManager;
     private int PERMISSIONS_REQUEST_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationClient;
-    private double userLocationLatitude = 43.616040;
-    private double userLocationLongitude = 7.072189;
+    private double userLocationLatitude = 0;//43.616040;
+    private double userLocationLongitude = 0;//7.072189;
     private double latToSend = 0;
     private double lonToSend = 0;
     private Position positionSpin;
+    private String positionRoomSpin = "-----";
     private Bitmap image;
-
+    private static boolean userPosition = true;
     ImageView imageView;
     Uri imageUri;
 
@@ -98,6 +104,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
+                userPosition = false;
             }
         });
 
@@ -128,17 +135,29 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         Twitter.initialize(config);
 
         final Spinner editLocalisation = findViewById(R.id.localisationSpinner);
+        final Spinner editLocalisationRoom = findViewById(R.id.salleSpinner);
         editLocalisation.setAdapter(new ArrayAdapter<Position>(this, android.R.layout.simple_spinner_item, Position.values()));
         editLocalisation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                positionSpin = (Position)editLocalisation.getSelectedItem();
-                LatLng position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
+                positionSpin = (Position) editLocalisation.getSelectedItem();
+
+                editLocalisationRoom.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, PositionRoom.getRoomByBat(positionSpin.getName())));
+
+                LatLng position = new LatLng(positionSpin.getLat(), positionSpin.getLon());
                 googleMap.clear();
                 googleMap.addMarker(new MarkerOptions().position(position)
                         .title(positionSpin.getName()));
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
                 latToSend = positionSpin.getLat();
                 lonToSend = positionSpin.getLon();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        editLocalisationRoom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                positionRoomSpin = (String)editLocalisationRoom.getSelectedItem();
             }
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -184,7 +203,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         byteArray = stream.toByteArray();
                         image.recycle();
                     }
-                    Incident word = new Incident(title,author,1,latToSend,lonToSend,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    Incident word = new Incident(title,author,1,latToSend,lonToSend,positionRoomSpin,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
                     if (editEmergency.getProgress()>=1 && Instance.getInstance().getSession().equals("admin")) {
@@ -242,7 +261,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         this.googleMap = googleMap;
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         LatLng position;
-        if(positionSpin != null) {
+        if(positionSpin != null && userPosition == false) {
             position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
         }else{
             position = new LatLng(userLocationLatitude,userLocationLongitude);
@@ -270,7 +289,11 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 luciole.setLatitude(Position.BatimentL.getLat());
                 luciole.setLongitude(Position.BatimentL.getLon());
 
-                if (touchLocation.distanceTo(batE) < distanceMax || touchLocation.distanceTo(luciole) < distanceMax) {
+                Location forum = new Location("Forum");
+                forum.setLatitude(Position.BatimentF.getLat());
+                forum.setLongitude(Position.BatimentF.getLon());
+
+                if (touchLocation.distanceTo(batE) < distanceMax || touchLocation.distanceTo(luciole) < distanceMax || touchLocation.distanceTo(forum) < distanceMax) {
                     googleMap.clear();
                     googleMap.addMarker(new MarkerOptions().position(point).title("Votre choix"));
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
@@ -315,7 +338,9 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         } else {
             // Permission has already been granted
+            googleMap.setMyLocationEnabled(true);
             getCurrentLocation();
+
         }
     }
 
@@ -380,5 +405,4 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, 1);
     }
-
 }
