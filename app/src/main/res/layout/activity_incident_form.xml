@@ -52,8 +52,8 @@
             android:onClick="StartNotificationClicked"
             android:text="Sauvegarder"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintStart_toEndOf="@+id/gallery" />
 
         <TextView
             android:id="@+id/textView2"
@@ -124,23 +124,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/save"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emergencyBar"
-            app:layout_constraintVertical_bias="0.0"
-            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
-
         <Spinner
             android:id="@+id/localisationSpinner"
             android:layout_width="220dp"
@@ -179,46 +162,57 @@
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toTopOf="@+id/textView6" />
 
-        <Button
-            android:id="@+id/cameraBnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+        <ImageView
+            android:id="@+id/camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Prendre une photo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.084"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/map" />
+            app:layout_constraintBottom_toBottomOf="@+id/save"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:srcCompat="@android:drawable/ic_menu_camera" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="298dp"
             android:layout_height="184dp"
-            android:layout_marginBottom="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="30dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraBnt"
-            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
-        <Button
-            android:id="@+id/acessGaleryBnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/gallery"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"
-            android:text="Choisir une photo"
-            app:layout_constraintBottom_toBottomOf="@+id/cameraBnt"
-            app:layout_constraintStart_toEndOf="@+id/cameraBnt"
-            app:layout_constraintTop_toTopOf="@+id/cameraBnt"
-            app:layout_constraintVertical_bias="0.0" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/save"
+            app:layout_constraintStart_toEndOf="@+id/camera"
+            app:layout_constraintTop_toTopOf="@+id/save"
+            app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emergencyBar"
+            app:layout_constraintVertical_bias="1.0"
+            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

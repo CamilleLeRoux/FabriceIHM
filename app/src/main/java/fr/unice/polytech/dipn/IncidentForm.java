@@ -165,10 +165,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button cameraBtn = (Button) findViewById(R.id.cameraBnt);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        ImageView camera = findViewById(R.id.camera);
+        imageView = findViewById(R.id.imageView);
 
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
+        camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -176,9 +176,9 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button accessGaleryBnt = (Button) findViewById(R.id.acessGaleryBnt);
+        ImageView gallery = findViewById(R.id.gallery);
 
-        accessGaleryBnt.setOnClickListener(new View.OnClickListener() {
+        gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
