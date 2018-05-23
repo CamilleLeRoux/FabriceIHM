@@ -2,7 +2,6 @@ package fr.unice.polytech.dipn;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,22 +18,24 @@ import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
 public class CustomTweetTimeLineAdapter extends TweetTimelineRecyclerViewAdapter {
 
+    private Tweet tweet;
+
     protected CustomTweetTimeLineAdapter(Context context, Timeline<Tweet> timeline, int styleResId, Callback<Tweet> cb) {
         super(context, timeline, styleResId, cb);
     }
 
     @Override
     public TweetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final Tweet tweet = new TweetBuilder().build();
+        this.tweet = new TweetBuilder().build();
         final CompactTweetView compactTweetView = new CompactTweetView(context, tweet, styleResId);
         compactTweetView.setOnActionCallback(actionCallback);
-        compactTweetView.setOnTouchListener(new View.OnTouchListener() {
+        compactTweetView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onLongClick(View view) {
                 Intent intent = new Intent(context, IncidentForm.class);
-                intent.putExtra("fromTweet",true);
-                System.out.println("Clicked on "+tweet.coordinates);
-                intent.putExtra("textFromTweet",tweet.text);
+
+                intent.putExtra("fromTweet", true);
+                intent.putExtra("textFromTweet", compactTweetView.getTweet().text);
                 context.startActivity(intent);
                 return false;
             }

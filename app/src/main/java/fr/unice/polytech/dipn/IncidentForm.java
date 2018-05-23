@@ -3,7 +3,6 @@ package fr.unice.polytech.dipn;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +10,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,8 +30,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,7 +47,6 @@ import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -86,11 +79,11 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
-    protected void onCreate (Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this,R.style.MyAlertDialogStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this, R.style.MyAlertDialogStyle);
 
         builder.setMessage(R.string.popup_message)
                 .setTitle(R.string.popup_title);
@@ -122,8 +115,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         boolean fromTweet = getIntent().getBooleanExtra("fromTweet", false);
         System.out.println("From Tweet flux? " + fromTweet);
         if (fromTweet) {
-            System.out.println("Text from tweet: " + getIntent().getStringExtra("textFromTweet"));
-            editTitle.setText(getIntent().getStringExtra("textFromTweet"));
+            String tft = getIntent().getStringExtra("textFromTweet");
+            editTitle.setText(tft.split("\n")[1]);
         }
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
@@ -164,8 +157,9 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         editLocalisationRoom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                positionRoomSpin = (String)editLocalisationRoom.getSelectedItem();
+                positionRoomSpin = (String) editLocalisationRoom.getSelectedItem();
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -210,7 +204,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         byteArray = stream.toByteArray();
                         image.recycle();
                     }
-                    Incident word = new Incident(title,author,1,latToSend,lonToSend,positionRoomSpin,editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
+                    Incident word = new Incident(title, author, 1, latToSend, lonToSend, positionRoomSpin, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
                     incidentViewModel.insert(word);
 
                     if (editEmergency.getProgress() >= 1 && Instance.getInstance().getSession().equals("admin")) {
@@ -283,10 +277,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         this.googleMap = googleMap;
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         LatLng position;
-        if(positionSpin != null && userPosition == false) {
-            position = new LatLng(positionSpin.getLat(),positionSpin.getLon());
-        }else{
-            position = new LatLng(userLocationLatitude,userLocationLongitude);
+        if (positionSpin != null && userPosition == false) {
+            position = new LatLng(positionSpin.getLat(), positionSpin.getLon());
+        } else {
+            position = new LatLng(userLocationLatitude, userLocationLongitude);
         }
         googleMap.addMarker(new MarkerOptions().position(position)
                 .title("Polytech Batiment E"));
@@ -322,7 +316,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     latToSend = touchLocation.getLatitude();
                     lonToSend = touchLocation.getLongitude();
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this,R.style.MyAlertDialogStyle);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(IncidentForm.this, R.style.MyAlertDialogStyle);
 
                     builder.setMessage(R.string.popupDistance_message)
                             .setTitle(R.string.popupDistance_title);
@@ -335,15 +329,15 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
                     builder.show();
 
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(batE.getLatitude(),batE.getLongitude()), 18));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(batE.getLatitude(), batE.getLongitude()), 18));
                 }
             }
         });
 
     }
 
-    public void permission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+    public void permission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
