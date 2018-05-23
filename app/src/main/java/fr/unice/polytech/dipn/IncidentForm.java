@@ -3,7 +3,6 @@ package fr.unice.polytech.dipn;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +10,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,11 +29,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -55,7 +47,6 @@ import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -214,11 +205,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         byteArray = stream.toByteArray();
                         image.recycle();
                     }
-                    Incident word = new Incident(title, author, 1, latToSend, lonToSend, positionRoomSpin, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
                     Incident word;
-                    if(userPosition){
-                        word = new Incident(title,author,1,userLocationLatitude,userLocationLongitude,"-----",editEmergency.getProgress()+1,editTitle.getText().toString(),formattedDate, byteArray);
-                    }else {
+                    if (userPosition) {
+                        word = new Incident(title, author, 1, userLocationLatitude, userLocationLongitude, "-----", editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
+                    } else {
                         word = new Incident(title, author, 1, latToSend, lonToSend, positionRoomSpin, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
                     }
                     incidentViewModel.insert(word);
@@ -274,20 +264,20 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
 
         Task<Location> locationTask = mFusedLocationClient.getLastLocation().
                 addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    googleMap.clear();
-                    googleMap.addMarker(new MarkerOptions().position(latLng)
-                            .title("Votre position"));
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-                    userLocationLatitude = location.getLatitude();
-                    userLocationLongitude = location.getLongitude();
-                }
-            }
-        });
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            googleMap.clear();
+                            googleMap.addMarker(new MarkerOptions().position(latLng)
+                                    .title("Votre position"));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+                            userLocationLatitude = location.getLatitude();
+                            userLocationLongitude = location.getLongitude();
+                        }
+                    }
+                });
     }
 
 
