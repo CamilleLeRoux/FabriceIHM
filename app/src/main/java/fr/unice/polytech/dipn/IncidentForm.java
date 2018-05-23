@@ -115,7 +115,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         System.out.println("From Tweet flux? " + fromTweet);
         if (fromTweet) {
             String tft = getIntent().getStringExtra("textFromTweet");
-            editTitle.setText(tft.split("\n")[1]);
+            editTitle.setText(tft);
         }
 
         final SeekBar editEmergency = findViewById(R.id.emergencyBar);
