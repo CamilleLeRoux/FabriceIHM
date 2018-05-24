@@ -286,6 +286,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         LatLng position;
         if (positionSpin != null && userPosition == false) {
             position = new LatLng(positionSpin.getLat(), positionSpin.getLon());

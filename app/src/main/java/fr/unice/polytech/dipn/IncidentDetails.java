@@ -144,6 +144,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         LatLng position = new LatLng(incident.getLatitude(),incident.getLongitude());
         googleMap.clear();
         googleMap.addMarker(new MarkerOptions().position(position)
