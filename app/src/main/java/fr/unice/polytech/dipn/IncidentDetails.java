@@ -1,5 +1,6 @@
 package fr.unice.polytech.dipn;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +54,12 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final ImageView iright = findViewById(R.id.detailRight);
         final ImageView isuppr = findViewById(R.id.detailSuppr);
 
+        if(Instance.getInstance().getSession().equals("user")) {
+            ileft.setVisibility(View.INVISIBLE);
+            iright.setVisibility(View.INVISIBLE);
+            isuppr.setVisibility(View.INVISIBLE);
+        }
+
         refreshProgressBar();
 
         ileft.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +85,25 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         isuppr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ivm.delete(incident);
-                Intent intent = new Intent(getBaseContext(), IncidentList.class);
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(IncidentDetails.this, R.style.MyAlertDialogStyle);
+
+                builder.setMessage(R.string.popup_suppress_title);
+
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ivm.delete(incident);
+                        Intent intent = new Intent(getBaseContext(), IncidentList.class);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+                builder.show();
+
             }
         });
 
@@ -98,8 +122,10 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.detailMap);
         mapFragment.getMapAsync(this);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length);
-        image.setImageBitmap(bitmap);
+        if (incident.getImage()!=null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length);
+            image.setImageBitmap(bitmap);
+        }
 
         switch(incident.getImportance()) {
             case 1:
