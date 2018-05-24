@@ -1,8 +1,10 @@
 package fr.unice.polytech.dipn;
 
 import android.arch.lifecycle.LiveData;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,10 +27,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        TextView title = findViewById(R.id.titleMap);
+        title.setTextColor(Color.WHITE);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         LiveData<List<Incident>> incidentList = Instance.getInstance().getIncidentViewModel().getAllIncident();
 
         List<Incident> incidents = incidentList.getValue();
