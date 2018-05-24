@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".TutoActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -34,7 +34,7 @@
         <activity
             android:name=".IncidentForm"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".IncidentDetails"
             android:configChanges="orientation"
@@ -47,7 +47,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".TwitterList"></activity>
+        <activity android:name=".TwitterList" />
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>

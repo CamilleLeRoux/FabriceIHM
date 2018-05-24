@@ -21,7 +21,7 @@ import fr.unice.polytech.dipn.R;
  * Created by user on 30/04/2018.
  */
 
-@Database(entities = {Incident.class}, version = 4)
+@Database(entities = {Incident.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static RoomDatabase.Callback roomDatabaseCallback =

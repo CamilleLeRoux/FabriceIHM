@@ -25,4 +25,25 @@
         <item>Forum</item>
         <item>Les Lucioles</item>
     </string-array>
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Bienvenue sur DIPN !</string>
+    <string name="slide_1_desc">L\'application de déclaration d\'incidents de Polytech Nice</string>
+
+    <string name="slide_2_title">Déclarer un incident !</string>
+    <string name="slide_2_desc">Cliquez sur ce bouton si vous voulez ajouter un incident</string>
+
+    <string name="slide_3_title">Incidents sur Twitter !</string>
+    <string name="slide_3_desc">Cliquez sur ce bouton si vous voulez visualiser les incidents déclarés sur Twitter</string>
+
+    <string name="slide_4_title">Localisation des incidents</string>
+    <string name="slide_4_desc">1 - En selectionnant le batiment et la salle\n2 - En appuyant sur la carte avec votre doigt\n3 - En utilisant votre position GPS</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+
+    <string name="popup_suppress_title">Etes vous sur de vouloir supprimer cet incident?</string>
 </resources>
