@@ -57,6 +57,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.456"
-        app:srcCompat="@drawable/sublime" />
+        app:srcCompat="@drawable/sublime2" />
 
 </android.support.constraint.ConstraintLayout>
