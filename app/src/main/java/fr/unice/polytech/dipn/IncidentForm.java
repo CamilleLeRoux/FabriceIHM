@@ -205,9 +205,11 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     word.setImportance(editEmergency.getProgress() + 1);
                     word.setLatitude(positionSpin.getLat());
                     word.setLongitude(positionSpin.getLon());
+
                     incidentViewModel.insert(word);
                     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
                     String incidentId = mDatabase.push().getKey();
+                    word.setMishap(incidentId);
                     mDatabase.child(incidentId).setValue(word);
                     if (imageUri != null) {
 
@@ -224,11 +226,10 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                                 .createIntent();
                         startActivity(intentTweet);
                     }
-
+                    notificationCall();
 //                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
 //                    startActivity(intent);
                 }
-                    notificationCall();
                 finish();
                 }
         });

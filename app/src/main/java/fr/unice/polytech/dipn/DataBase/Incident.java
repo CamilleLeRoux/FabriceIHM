@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.android.gms.common.data.TextFilterable;
+
 import java.io.Serializable;
 
 /**
@@ -33,6 +35,8 @@ public class Incident implements Serializable{
     private String date;
     @ColumnInfo
     private byte[] image;
+    @ColumnInfo
+    private String mishap;
 
     /*public Incident(String title, String author, int advancement, double latitude, double longitude,
                     int importance, String description, String date) {
@@ -63,13 +67,22 @@ public class Incident implements Serializable{
         this.importance = 1;
     }
 
-    public int getId() {
+     public int getId() {
         return id;
+    }
+
+    public void setMishap(String mishap){
+        this.mishap = mishap;
+    }
+
+    public String getMishap() {
+        return mishap;
     }
 
     public void setId(int id) {
         this.id = id;
     }
+
 
     public String getAuthor() {
         return author;

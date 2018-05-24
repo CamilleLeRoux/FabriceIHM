@@ -8,7 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.unice.polytech.dipn.DataBase.Incident;
 
@@ -17,6 +23,7 @@ import fr.unice.polytech.dipn.DataBase.Incident;
  */
 
 public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
+
 
     public interface OnItemClickListener {
         void onItemClick(Incident incident);
@@ -51,23 +58,39 @@ public class IncidentAdapter extends RecyclerView.Adapter<IncidentViewHolder> {
 
     @Override
     public void onBindViewHolder(IncidentViewHolder holder, final int position) {
-
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
             Intent intent = new Intent(v.getContext(), IncidentDetails.class);
-
             intent.putExtra("Incident", incidentList.get(position));
-
             v.getContext().startActivity(intent);            }
 
         });
 
-        Incident a = incidentList.get(position);
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("incident");
+                Incident incident = incidentList.get(position);
+                int advancement = incident.getAdvancement();
+                if ( advancement < 3 ){ advancement++; }
+                incident.setAdvancement(advancement);
 
+
+                DatabaseReference child = mDatabase.child(incident.getMishap());
+                Map<String,Object> onvOUSbAISE  = new HashMap<>();
+                onvOUSbAISE.put("advancement",incident.getAdvancement());
+                child.updateChildren(onvOUSbAISE);
+               // mDatabase.setValue(incident,Incident.class);
+               /* List<Incident> incidentList=new ArrayList<>();
+                incidentList.addAll(IncidentPreviewFragment.getInstance().getArticleList());
+                IncidentPreviewFragment.getInstance().getArticleList().clear();
+                IncidentPreviewFragment.getInstance().setArticleList(incidentList); */
+                return true;
+            }
+        });
+        Incident a = incidentList.get(position);
         holder.getDate().setText(a.getDate());
         holder.getTitle().setText(a.getTitle());
-
         switch(a.getImportance()) {
             case 1:
                 holder.getIcon().setImageResource(R.drawable.emergency1);

@@ -29,6 +29,7 @@ import fr.unice.polytech.dipn.DataBase.Incident;
 import fr.unice.polytech.dipn.DataBase.IncidentViewModel;
 
 import static android.app.Activity.RESULT_OK;
+import static okhttp3.internal.Internal.instance;
 
 /**
  * Created by Margoulax on 29/04/2018.
@@ -44,6 +45,8 @@ public class IncidentPreviewFragment extends Fragment {
     private static IncidentViewModel incidentViewModel;
     private List<Incident> articleList;
     IncidentAdapter mAdapter;
+
+   static IncidentPreviewFragment fragment;
 
     private static String INCIDENT_VIEW_MODEL = "ivm";
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
@@ -63,12 +66,16 @@ public class IncidentPreviewFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static IncidentPreviewFragment newInstance(int sectionNumber, IncidentViewModel ivm) {
-        IncidentPreviewFragment fragment = new IncidentPreviewFragment();
+        fragment = new IncidentPreviewFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putSerializable(INCIDENT_VIEW_MODEL, ivm);
         System.out.println("Loading Fragment "+sectionNumber);
         fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static IncidentPreviewFragment getInstance() {
         return fragment;
     }
 
@@ -143,4 +150,11 @@ public class IncidentPreviewFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
+    public List<Incident> getArticleList() {
+        return articleList;
+    }
+
+    public void setArticleList(List<Incident> articleList) {
+        this.articleList = articleList;
+    }
 }
