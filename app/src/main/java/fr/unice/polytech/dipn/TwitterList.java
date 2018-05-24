@@ -39,8 +39,6 @@ public class TwitterList extends AppCompatActivity {
                 .query("#Polytech")
                 .maxItemsPerRequest(50)
                 .build();
-        System.out.println("Result searchTimeLine:");
-        System.out.println(searchTimeline.toString());
 
         final CustomTweetTimeLineAdapter adapter = new CustomTweetTimeLineAdapter(this,
                 searchTimeline,

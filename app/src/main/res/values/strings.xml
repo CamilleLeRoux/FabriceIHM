@@ -9,6 +9,7 @@
     <string name="popupDistance_message">La position choisie est trop loin de Polytech</string>
     <string name="popupDistance_title">Probleme position choisie</string>
     <string name="popup_title">Utilisation position gps</string>
+    <string name="popup_suppress_title">Voulez-vous vraiment supprimer cet incident?</string>
     <string name="admin">Administrateur</string>
     <string name="user">Utilisateur</string>
     <string name="technic">Techniciens</string>

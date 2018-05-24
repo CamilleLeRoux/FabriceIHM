@@ -217,17 +217,18 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                         final TwitterSession session = new TwitterSession(new TwitterAuthToken(getString(R.string.com_twitter_sdk_android_ACCESS_KEY), getString(R.string.com_twitter_sdk_android_ACCESS_SECRET)), 985877416857034752L, "pbunice");
                         TwitterCore.getInstance().getSessionManager().setActiveSession(session);
 
-                        if (image != null) {
+                        if (imageUri != null) {
+                            String provider = "fr.unice.polytech.dipn";
 
-                            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                            image.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                            String path = MediaStore.Images.Media.insertImage(getBaseContext().getContentResolver(), image, "Title", null);
-                            Uri uri = Uri.parse(path);
+
+                            // grant all three uri permissions!
+                            grantUriPermission(provider, imageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            grantUriPermission(provider, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                             final Intent intentTweet = new ComposerActivity.Builder(IncidentForm.this)
                                     .session(session)
                                     .text("Incident Important:\n" + title + "\nLocalisation: " + editLocalisation.getSelectedItem().toString())
-                                    .image(uri)
+                                    .image(imageUri)
                                     .createIntent();
                             startActivity(intentTweet);
                         } else {
