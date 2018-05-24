@@ -12,10 +12,12 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -49,6 +51,8 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -75,6 +79,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private static boolean userPosition = true;
     ImageView imageView;
     Uri imageUri;
+    private String mCurrentPhotoPath;
 
 
     @Override
@@ -173,6 +178,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
+                //dispatchTakePictureIntent();
             }
         });
 
@@ -239,11 +245,13 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                             startActivity(intentTweet);
                         }
                     }
+                    if ( word != null ){
+                        notificationCall();
+                    }
 
 //                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
 //                    startActivity(intent);
                 }
-                notificationcall();
                 finish();
             }
         });
@@ -394,8 +402,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void notificationcall() {
-
+    public void notificationCall() {
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_sublime)
@@ -419,7 +426,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                 imageView.setVisibility(View.VISIBLE);
             }
             imageView.setImageURI(imageUri);
-        } else {
+        }
+        if (resultCode == RESULT_OK && requestCode == 0){
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             if (bitmap != null) {
                 imageView.setVisibility(View.VISIBLE);

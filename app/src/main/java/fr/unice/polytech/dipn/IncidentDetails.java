@@ -1,5 +1,8 @@
 package fr.unice.polytech.dipn;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,6 +36,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     private Incident incident;
     private IncidentViewModel ivm;
     private GoogleMap googleMap;
+    private int note;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -69,6 +74,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                     incident.setAdvancement(incident.getAdvancement()-1);
                     System.out.println("New state: "+incident.getAdvancement());
                     refreshProgressBar();
+                    notificationCall(0);
                 }
             }
         });
@@ -79,6 +85,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                     incident.setAdvancement(incident.getAdvancement()+1);
                     System.out.println("New state: "+incident.getAdvancement());
                     refreshProgressBar();
+                    notificationCall(1);
                 }
             }
         });
@@ -94,6 +101,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                         ivm.delete(incident);
                         Intent intent = new Intent(getBaseContext(), IncidentList.class);
                         startActivity(intent);
+                        notificationCall(2);
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -155,7 +163,38 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void refreshProgressBar() {
         ProgressBar bar = findViewById(R.id.progressBar);
-        bar.setProgress(1+33*incident.getAdvancement(),true);
+        bar.setProgress(1+33*incident.getAdvancement());
+    }
+
+    public void notificationCall(int sens) {
+        if (sens == 0 || sens == 1 || sens ==2) {
+            String message = null;
+            switch (sens) {
+                case 0:
+                    message = "Description:" + incident.getDescription() + "a bien été mis à jour";
+                case 1:
+                    message = "" + incident.getDescription() + "a bien été mis à jour";
+                case 2:
+                     message = "Description:" + incident.getDescription() + "a été supprimé";
+            }
+
+            NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setSmallIcon(R.drawable.ic_sublime)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
+                    .setContentTitle("L'incident:" + incident.getTitle())
+                    .setContentText(message)
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                            .bigPicture(BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length)));
+
+
+            Intent intent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            notification.setContentIntent(pendingIntent);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(note, notification.build());
+            note ++;
+        }
     }
 
 }
