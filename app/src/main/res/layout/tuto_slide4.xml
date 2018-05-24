@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/tutomapImage"
             android:layout_width="264dp"
             android:layout_height="347dp"
             android:src="@drawable/android_map" />

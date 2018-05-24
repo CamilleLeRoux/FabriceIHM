@@ -15,8 +15,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class TutoActivity extends AppCompatActivity {
 
@@ -91,6 +94,8 @@ public class TutoActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     private void addBottomDots(int currentPage) {
@@ -179,6 +184,10 @@ public class TutoActivity extends AppCompatActivity {
             View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
 
+            if(position == 3) {
+                ImageView iV = view.findViewById(R.id.tutomapImage);
+                Glide.with(TutoActivity.this).load(R.drawable.android_map).into(iV);
+            }
             return view;
         }
 
