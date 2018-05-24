@@ -76,7 +76,10 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                     incident.setAdvancement(incident.getAdvancement()-1);
                     System.out.println("New state: "+incident.getAdvancement());
                     refreshProgressBar();
-                    notificationCall(0);
+                    if (Instance.getInstance().getSession().equals("technic") || Instance.getInstance().getSession().equals("admin"))
+                    {
+                        notificationCall(0);
+                    }
                 }
             }
         });
@@ -87,7 +90,9 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                     incident.setAdvancement(incident.getAdvancement()+1);
                     System.out.println("New state: "+incident.getAdvancement());
                     refreshProgressBar();
-                    notificationCall(1);
+                    if (Instance.getInstance().getSession().equals("technic") || Instance.getInstance().getSession().equals("admin")) {
+                        notificationCall(1);
+                    }
                 }
             }
         });
@@ -103,7 +108,9 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
                         ivm.delete(incident);
                         Intent intent = new Intent(getBaseContext(), IncidentList.class);
                         startActivity(intent);
-                        notificationCall(2);
+                        if (Instance.getInstance().getSession().equals("technic") || Instance.getInstance().getSession().equals("admin")) {
+                            notificationCall(2);
+                        }
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -178,23 +185,43 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     public void notificationCall(int sens) {
         if (sens == 0 || sens == 1 || sens ==2) {
             String message = null;
-            switch (sens) {
-                case 0:
-                    message = "Description:" + incident.getDescription() + "a bien été mis à jour";
-                case 1:
-                    message = "" + incident.getDescription() + "a bien été mis à jour";
-                case 2:
-                     message = "Description:" + incident.getDescription() + "a été supprimé";
+            NotificationCompat.Builder notification = null;
+            if (incident.getImage() != null) {
+                switch (sens) {
+                    case 0:
+                        message = "L'incident a bien été mis à jour";
+                    case 1:
+                        message = "L'incident a bien été mis à jour";
+                    case 2:
+                        message = "L'incident a été supprimé";
+                }
+                 notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setSmallIcon(R.drawable.ic_sublime)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
+                        .setContentTitle("L'incident:" + incident.getTitle())
+                        .setContentText(message)
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length)));
             }
+            else {
+                switch (sens) {
+                    case 0:
+                        message = "Description:" + incident.getDescription() + "a bien été mis à jour";
+                    case 1:
+                        message = "" + incident.getDescription() + "a bien été mis à jour";
+                    case 2:
+                        message = "Description:" + incident.getDescription() + "a été supprimé";
+                }
+                notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setSmallIcon(R.drawable.ic_sublime)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
+                        .setContentTitle("L'incident:" + incident.getTitle())
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(message));
 
-            NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setSmallIcon(R.drawable.ic_sublime)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
-                    .setContentTitle("L'incident:" + incident.getTitle())
-                    .setContentText(message)
-                    .setStyle(new NotificationCompat.BigPictureStyle()
-                            .bigPicture(BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length)));
+            }
 
 
             Intent intent = new Intent(this, MainActivity.class);

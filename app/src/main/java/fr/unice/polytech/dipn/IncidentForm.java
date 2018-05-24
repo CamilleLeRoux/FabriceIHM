@@ -79,7 +79,6 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     private static boolean userPosition = true;
     ImageView imageView;
     Uri imageUri;
-    private String mCurrentPhotoPath;
 
 
     @Override
