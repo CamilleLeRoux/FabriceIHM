@@ -41,7 +41,9 @@
     <string name="slide_3_desc">Cliquez sur ce bouton si vous voulez visualiser les incidents déclarés sur Twitter</string>
 
     <string name="slide_4_title">Localisation des incidents</string>
-    <string name="slide_4_desc">1 - En selectionnant le batiment et la salle\n2 - En appuyant sur la carte avec votre doigt\n3 - En utilisant votre position GPS</string>
+    <string name="slide_4_desc">1 - En selectionnant le batiment et la salle\n
+        2 - En appuyant sur la carte\n
+        3 - En utilisant votre position GPS</string>
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>

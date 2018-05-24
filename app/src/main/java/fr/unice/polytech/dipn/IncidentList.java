@@ -87,6 +87,20 @@ public class IncidentList extends AppCompatActivity {
                 startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
             }
         });
+
+        FloatingActionButton mapfab = findViewById(R.id.mapfab);
+        if(Instance.getInstance().getSession().equals("technic")) {
+            mapfab.setVisibility(View.VISIBLE);
+        } else {
+            mapfab.setVisibility(View.INVISIBLE);
+        }
+        mapfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(IncidentList.this, MapActivity.class);
+                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
+            }
+        });
     }
 
 

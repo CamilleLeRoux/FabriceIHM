@@ -213,7 +213,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     Incident word;
                     if (userPosition) {
-                        word = new Incident(title, author, 1, userLocationLatitude, userLocationLongitude, "-----", editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
+                        word = new Incident(title, author, 1, userLocationLatitude, userLocationLongitude, null, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
                     } else {
                         word = new Incident(title, author, 1, latToSend, lonToSend, positionRoomSpin, editEmergency.getProgress() + 1, editTitle.getText().toString(), formattedDate, byteArray);
                     }
@@ -294,6 +294,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         LatLng position;
         if (positionSpin != null && userPosition == false) {
             position = new LatLng(positionSpin.getLat(), positionSpin.getLon());
