@@ -1,4 +1,4 @@
-package fr.unice.polytech.dipn;
+package fr.unice.polytech.dipn.Tuto_Slide;
 
 import android.content.Context;
 import android.content.SharedPreferences;

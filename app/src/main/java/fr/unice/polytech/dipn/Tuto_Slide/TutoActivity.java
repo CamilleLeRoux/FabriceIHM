@@ -1,4 +1,4 @@
-package fr.unice.polytech.dipn;
+package fr.unice.polytech.dipn.Tuto_Slide;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import fr.unice.polytech.dipn.MainActivity;
+import fr.unice.polytech.dipn.R;
 
 public class TutoActivity extends AppCompatActivity {
 
