@@ -63,7 +63,7 @@ public class TutoActivity extends AppCompatActivity {
         layouts = new int[]{
                 R.layout.tuto_slide1,
                 R.layout.tuto_slide2,
-                R.layout.tuto_slide3,
+                //R.layout.tuto_slide3,
                 R.layout.tuto_slide4};
 
         // adding bottom dots
@@ -187,7 +187,7 @@ public class TutoActivity extends AppCompatActivity {
             View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
 
-            if(position == 3) {
+            if(position == 2) {
                 ImageView iV = view.findViewById(R.id.tutomapImage);
                 Glide.with(TutoActivity.this).load(R.drawable.android_map).into(iV);
             }
