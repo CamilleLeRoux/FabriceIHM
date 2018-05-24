@@ -48,7 +48,9 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         final ImageView icon = findViewById(R.id.detailIcon);
         final ImageView image = findViewById(R.id.detailImage);
         final TextView batiment = findViewById(R.id.detailBat);
+        final TextView Tbatiment = findViewById(R.id.textBat);
         final TextView salle = findViewById(R.id.detailRoom);
+        final TextView Tsalle = findViewById(R.id.textRoom);
 
         final ImageView ileft = findViewById(R.id.detailLeft);
         final ImageView iright = findViewById(R.id.detailRight);
@@ -115,9 +117,15 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
         if(!bat.equals("Rien")){
             batiment.setText(bat);
         }else{
-            batiment.setText("-----");
+            batiment.setVisibility(View.INVISIBLE);
+            Tbatiment.setVisibility(View.INVISIBLE);
         }
-        salle.setText(incident.getRoom());
+        if(incident.getRoom()!=null) {
+            salle.setText(incident.getRoom());
+        } else {
+            Tsalle.setVisibility(View.INVISIBLE);
+            salle.setVisibility(View.INVISIBLE);
+        }
 
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.detailMap);
         mapFragment.getMapAsync(this);
