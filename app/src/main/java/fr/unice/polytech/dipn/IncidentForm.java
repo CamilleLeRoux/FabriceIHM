@@ -384,6 +384,7 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     System.out.println("PERMISSION DENIED");
+                    userPosition = false;
                 }
                 return;
             }
