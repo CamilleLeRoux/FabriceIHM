@@ -24,6 +24,7 @@ import fr.unice.polytech.dipn.DataBase.Incident;
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
+    Marker mMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +65,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
-                for (Incident i : incidents){
-                    if (i.getTitle().equals(marker.getTitle())){
-                        Intent intent = new Intent(getBaseContext(), IncidentDetails.class);
-                        intent.putExtra("Incident", i);
-                        startActivityForResult(intent, 0);
-                        return true;
+                if(mMarker != null) {
+                    if (marker.getTitle().equals(mMarker.getTitle())) {
+                        for (Incident i : incidents) {
+                            if (i.getTitle().equals(marker.getTitle())) {
+                                Intent intent = new Intent(getBaseContext(), IncidentDetails.class);
+                                intent.putExtra("Incident", i);
+                                startActivityForResult(intent, 0);
+                                return true;
+                            }
+                        }
+                    } else {
+                        marker.showInfoWindow();
+                        mMarker = marker;
                     }
+                }else{
+                    mMarker = marker;
                 }
                 return false;
 
