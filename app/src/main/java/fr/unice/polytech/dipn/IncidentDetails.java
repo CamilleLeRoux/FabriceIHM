@@ -179,7 +179,7 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void refreshProgressBar() {
         ProgressBar bar = findViewById(R.id.progressBar);
-        bar.setProgress(1+33*incident.getAdvancement());
+        bar.setProgress(1+33*incident.getAdvancement(),true);
     }
 
     public void notificationCall(int sens) {
