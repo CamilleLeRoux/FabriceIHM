@@ -244,8 +244,8 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
                             startActivity(intentTweet);
                         }
                     }
-                    if ( word != null ){
-                        notificationCall();
+                    if (word != null) {
+                        notificationCall(word);
                     }
 
 //                    Intent intent = new Intent(IncidentForm.this, IncidentList.class);
@@ -402,15 +402,17 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void notificationCall() {
+    public void notificationCall(Incident incident) {
         NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_sublime)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
-                .setContentTitle("Info DIPN")
-                .setContentText("Un nouvel incident a été ajouté");
+                .setContentTitle("Info DIPN :  nouvel incident ")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Date: " + incident.getDate() + "\n" + "Description: " + incident.getDescription() + "\n" + "Importance: " + showImportance(incident.getImportance())));
 
-        Intent intent = new Intent(this, MainActivity.class);
+
+        Intent intent = new Intent(this, IncidentList.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -427,13 +429,14 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
             }
             imageView.setImageURI(imageUri);
         }
-        if (resultCode == RESULT_OK && requestCode == 0){
+        if (resultCode == RESULT_OK && requestCode == 0) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             if (bitmap != null) {
                 imageView.setVisibility(View.VISIBLE);
             }
             imageView.setImageBitmap(bitmap);
             this.image = bitmap;
+
         }
     }
 
@@ -441,4 +444,18 @@ public class IncidentForm extends AppCompatActivity implements OnMapReadyCallbac
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, 1);
     }
+
+    private String showImportance(int i) {
+        switch (i) {
+            case 1:
+                return "faible";
+            case 2:
+                return "moyenne";
+            case 3:
+                return "forte";
+        }
+        return "non renseignée";
+    }
+
 }
+

@@ -183,54 +183,38 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void notificationCall(int sens) {
+        NotificationCompat.Builder notification = null;
         if (sens == 0 || sens == 1 || sens ==2) {
             String message = null;
-            NotificationCompat.Builder notification = null;
-            if (incident.getImage() != null) {
-                switch (sens) {
-                    case 0:
-                        message = "L'incident a bien été mis à jour";
-                    case 1:
-                        message = "L'incident a bien été mis à jour";
-                    case 2:
-                        message = "L'incident a été supprimé";
-                }
-                 notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setSmallIcon(R.drawable.ic_sublime)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
-                        .setContentTitle("L'incident:" + incident.getTitle())
-                        .setContentText(message)
-                        .setStyle(new NotificationCompat.BigPictureStyle()
-                                .bigPicture(BitmapFactory.decodeByteArray(incident.getImage(), 0, incident.getImage().length)));
+            switch (sens) {
+                case 0:
+                    message = "Description: " + incident.getDescription() +"\n"+"L'avancement de l'incident diminue";
+                    break;
+                case 1:
+                    message = "Description: " + incident.getDescription() +"\n"+"\n"+"L'avancement de l'incident augmente";
+                    break;
+                case 2:
+                    message = "Description: " + incident.getDescription() +"\n"+"\n"+"L'incident a été supprimé";
+                    break;
             }
-            else {
-                switch (sens) {
-                    case 0:
-                        message = "Description:" + incident.getDescription() + "a bien été mis à jour";
-                    case 1:
-                        message = "" + incident.getDescription() + "a bien été mis à jour";
-                    case 2:
-                        message = "Description:" + incident.getDescription() + "a été supprimé";
-                }
-                notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setSmallIcon(R.drawable.ic_sublime)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
-                        .setContentTitle("L'incident:" + incident.getTitle())
-                        .setStyle(new NotificationCompat.BigTextStyle()
+            notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setSmallIcon(R.drawable.ic_sublime)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.sublime))
+                    .setContentTitle("Info DIPN: l'incident de " + incident.getAuthor())
+                    .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(message));
 
-            }
+        }
 
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, IncidentList.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             notification.setContentIntent(pendingIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(note, notification.build());
             note ++;
         }
-    }
+
 
 }
