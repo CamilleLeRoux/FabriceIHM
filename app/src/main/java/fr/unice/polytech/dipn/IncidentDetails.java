@@ -66,6 +66,9 @@ public class IncidentDetails extends AppCompatActivity implements OnMapReadyCall
             iright.setVisibility(View.INVISIBLE);
             isuppr.setVisibility(View.INVISIBLE);
         }
+        if(Instance.getInstance().getSession().equals("technic") && incident.getImportance()>1) {
+            isuppr.setVisibility(View.INVISIBLE);
+        }
 
         refreshProgressBar();
 
